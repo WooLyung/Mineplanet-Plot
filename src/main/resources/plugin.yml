@@ -1,0 +1,5 @@
+name: MineplanetPlot
+version: ${project.version}
+main: woolyung.main.MineplanetPlot
+description: plot plugin for mineplanet server 1.15.2
+website: https://github.com/WooLyung/

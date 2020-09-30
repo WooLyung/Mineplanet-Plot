@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mineplanet plot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/mineplanet_plot_jar</output-path>
+    <root id="archive" name="mineplanet-plot.jar">
+      <element id="module-output" name="mineplanet plot" />
+    </root>
+  </artifact>
+</component>
