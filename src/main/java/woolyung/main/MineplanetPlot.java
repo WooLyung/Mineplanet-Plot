@@ -1,8 +1,7 @@
 package woolyung.main;
 
-import org.bukkit.Bukkit;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
+import woolyung.main.plot.PlotWorld;
 
 import java.io.File;
 
@@ -13,8 +12,6 @@ public final class MineplanetPlot extends JavaPlugin
     @Override
     public void onEnable()
     {
-        getLogger().info("플러그인이 활성화되었습니다.");
-
         createConfig();
         createPluginDirectory();
         createDataDirectory();
@@ -25,7 +22,6 @@ public final class MineplanetPlot extends JavaPlugin
     @Override
     public void onDisable()
     {
-        getLogger().info("플러그인이 비활성화되었습니다.");
     }
 
     private void init()
