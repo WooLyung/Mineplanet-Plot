@@ -8,6 +8,7 @@ import java.io.File;
 public final class MineplanetPlot extends JavaPlugin
 {
     private PlotWorld plotWorld;
+    private PlotDatabase plotDatabase;
 
     @Override
     public void onEnable()
@@ -24,9 +25,15 @@ public final class MineplanetPlot extends JavaPlugin
     {
     }
 
+    public PlotDatabase getPlotDatabase()
+    {
+        return plotDatabase;
+    }
+
     private void init()
     {
         plotWorld = new PlotWorld(getConfig().getString("world"));
+        plotDatabase = new PlotDatabase();
     }
 
     private void createConfig()
@@ -52,7 +59,8 @@ public final class MineplanetPlot extends JavaPlugin
             }
             catch (Exception e)
             {
-                getLogger().info("[마인플래닛플롯] 플러그인 폴더 생성에 실패했습니다. 플러그인을 비활성화합니다.");
+                e.printStackTrace();
+                getLogger().info("플러그인 폴더 생성에 실패했습니다. 플러그인을 비활성화합니다.");
                 getPluginLoader().disablePlugin(this);
                 return false;
             }
@@ -79,7 +87,8 @@ public final class MineplanetPlot extends JavaPlugin
             }
             catch (Exception e)
             {
-                getLogger().info("[마인플래닛플롯] 데이터 폴더 생성에 실패했습니다. 플러그인을 비활성화합니다.");
+                e.printStackTrace();
+                getLogger().info("데이터 폴더 생성에 실패했습니다. 플러그인을 비활성화합니다.");
                 getPluginLoader().disablePlugin(this);
                 return false;
             }
