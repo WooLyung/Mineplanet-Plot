@@ -1,6 +1,7 @@
 package woolyung.main;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import woolyung.main.Events.PlayerJoinEventListener;
 import woolyung.main.commands.PlotCommand;
 import woolyung.main.plot.PlotWorld;
 
@@ -48,7 +49,9 @@ public final class MineplanetPlot extends JavaPlugin
         plotWorld = new PlotWorld(getConfig().getString("world"));
         plotDatabase = new PlotDatabase();
 
-        this.getCommand("plot").setExecutor(new PlotCommand());
+        getCommand("plot").setExecutor(new PlotCommand());
+
+        getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
     }
 
     private void createConfig()

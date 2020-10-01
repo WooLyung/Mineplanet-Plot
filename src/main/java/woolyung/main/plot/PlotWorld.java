@@ -9,26 +9,10 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Stairs;
 import woolyung.main.MineplanetPlot;
+import woolyung.main.plot.Data.PlotLocData;
 
 public class PlotWorld
 {
-    public enum PLOT_SECTION
-    {
-        PLOT,
-        INNER_LINE, OUTER_LINE,
-        ROAD_TOP, ROAD_LEFT, ROAD_EDGE,
-        SKIN
-    }
-
-    public class PlotLocData
-    {
-        public int plotLocX;
-        public int plotLocZ;
-        public int plotInnerLocX;
-        public int plotInnerLocZ;
-        public PLOT_SECTION plotSection;
-    }
-
     private World world;
     private PlotGenerator generator;
 
@@ -68,19 +52,19 @@ public class PlotWorld
         plotLocData.plotInnerLocZ = innerZ;
 
         if (innerX >= 7 && innerX <= 31 && innerZ >= 7 && innerZ <= 31)
-            plotLocData.plotSection = PLOT_SECTION.PLOT;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.PLOT;
         else if (innerX >= 6 && innerX <= 32 && innerZ >= 6 && innerZ <= 32)
-            plotLocData.plotSection = PLOT_SECTION.INNER_LINE;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.INNER_LINE;
         else if (innerX >= 1 && innerX <= 37 && innerZ >= 1 && innerZ <= 37)
-            plotLocData.plotSection = PLOT_SECTION.SKIN;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.SKIN;
         else if (innerX <= 38 && innerZ <= 38)
-            plotLocData.plotSection = PLOT_SECTION.OUTER_LINE;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.OUTER_LINE;
         else if (innerX >= 39 && innerZ <= 38)
-            plotLocData.plotSection = PLOT_SECTION.ROAD_LEFT;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.ROAD_LEFT;
         else if (innerZ >= 39 && innerX <= 38)
-            plotLocData.plotSection = PLOT_SECTION.ROAD_TOP;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.ROAD_TOP;
         else
-            plotLocData.plotSection = PLOT_SECTION.ROAD_EDGE;
+            plotLocData.plotSection = PlotLocData.PLOT_SECTION.ROAD_EDGE;
 
         return plotLocData;
     }

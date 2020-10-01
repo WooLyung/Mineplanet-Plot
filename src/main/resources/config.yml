@@ -1,2 +1,10 @@
-world: 'plot'
+world: "plot"
 height: 80
+message:
+  buy:
+    already_my_plot: "본인 플롯임"
+    exist_plot_owner: "다른사람 플롯임"
+    plot_limit: "플롯이 이미 최대 개수임"
+    not_plot: "플롯이 아님"
+    not_plot_world: "플롯 월드가 아님"
+    buy_plot: "플롯 구매!"
