@@ -21,7 +21,7 @@ public class PlotDatabase
 
     private void sqliteSetup()
     {
-        path = JavaPlugin.getProvidingPlugin(MineplanetPlot.class).getDataFolder() + "/Datas/";
+        path = MineplanetPlot.instance.getDataFolder() + "/Datas/";
         file = "plot.db";
 
         try
@@ -34,14 +34,14 @@ public class PlotDatabase
         {
             e.printStackTrace();
             Bukkit.getLogger().info("jdbc 클래스를 찾을 수 없습니다. 플러그인을 비활성화합니다.");
-            JavaPlugin.getProvidingPlugin(MineplanetPlot.class).getPluginLoader().disablePlugin(JavaPlugin.getProvidingPlugin(MineplanetPlot.class));
+            MineplanetPlot.instance.getPluginLoader().disablePlugin(MineplanetPlot.instance);
             return;
         }
         catch (Exception e)
         {
             e.printStackTrace();
             Bukkit.getLogger().info("데이터베이스 예외가 발생했습니다. 플러그인을 비활성화합니다.");
-            JavaPlugin.getProvidingPlugin(MineplanetPlot.class).getPluginLoader().disablePlugin(JavaPlugin.getProvidingPlugin(MineplanetPlot.class));
+            MineplanetPlot.instance.getPluginLoader().disablePlugin(MineplanetPlot.instance);
             return;
         }
 
@@ -64,7 +64,7 @@ public class PlotDatabase
         {
             e.printStackTrace();
             Bukkit.getLogger().info("데이터베이스 예외가 발생했습니다. 플러그인을 비활성화합니다.");
-            JavaPlugin.getProvidingPlugin(MineplanetPlot.class).getPluginLoader().disablePlugin(JavaPlugin.getProvidingPlugin(MineplanetPlot.class));
+            MineplanetPlot.instance.getPluginLoader().disablePlugin(MineplanetPlot.instance);
             return;
         }
     }

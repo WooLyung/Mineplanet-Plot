@@ -1,6 +1,7 @@
 package woolyung.main;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import woolyung.main.commands.PlotCommand;
 import woolyung.main.plot.PlotWorld;
 
 import java.io.File;
@@ -9,6 +10,13 @@ public final class MineplanetPlot extends JavaPlugin
 {
     private PlotWorld plotWorld;
     private PlotDatabase plotDatabase;
+
+    public static MineplanetPlot instance;
+
+    public MineplanetPlot()
+    {
+        instance = this;
+    }
 
     @Override
     public void onEnable()
@@ -30,10 +38,17 @@ public final class MineplanetPlot extends JavaPlugin
         return plotDatabase;
     }
 
+    public PlotWorld getPlotWorld()
+    {
+        return plotWorld;
+    }
+
     private void init()
     {
         plotWorld = new PlotWorld(getConfig().getString("world"));
         plotDatabase = new PlotDatabase();
+
+        this.getCommand("plot").setExecutor(new PlotCommand());
     }
 
     private void createConfig()

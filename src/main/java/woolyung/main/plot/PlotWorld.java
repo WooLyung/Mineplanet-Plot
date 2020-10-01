@@ -8,11 +8,27 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Stairs;
-import org.bukkit.plugin.java.JavaPlugin;
 import woolyung.main.MineplanetPlot;
 
 public class PlotWorld
 {
+    public enum PLOT_SECTION
+    {
+        PLOT,
+        INNER_LINE, OUTER_LINE,
+        ROAD_TOP, ROAD_LEFT, ROAD_EDGE,
+        SKIN
+    }
+
+    public class PlotLocData
+    {
+        public int plotLocX;
+        public int plotLocZ;
+        public int plotInnerLocX;
+        public int plotInnerLocZ;
+        public PLOT_SECTION plotSection;
+    }
+
     private World world;
     private PlotGenerator generator;
 
@@ -26,7 +42,47 @@ public class PlotWorld
 
     public int getHeight()
     {
-        return JavaPlugin.getProvidingPlugin(MineplanetPlot.class).getConfig().getInt("height");
+        return MineplanetPlot.instance.getConfig().getInt("height");
+    }
+
+    public PlotLocData getPlotLocData(int x, int z)
+    {
+        PlotLocData plotLocData = new PlotLocData();
+
+        int plotX = 0;
+        if (x + 19 >= 0) plotX = (x + 19) / 44;
+        else plotX = ((x + 20) / 44) - 1;
+        plotLocData.plotLocX = plotX;
+
+        int plotZ = 0;
+        if (z + 19 >= 0) plotZ = (z + 19) / 44;
+        else plotZ = ((z + 20) / 44) - 1;
+        plotLocData.plotLocZ = plotZ;
+
+        int innerX = (x + 19) % 44;
+        if (innerX < 0) innerX += 44;
+        plotLocData.plotInnerLocX = innerX;
+
+        int innerZ = (z + 19) % 44;
+        if (innerZ < 0) innerZ += 44;
+        plotLocData.plotInnerLocZ = innerZ;
+
+        if (innerX >= 7 && innerX <= 31 && innerZ >= 7 && innerZ <= 31)
+            plotLocData.plotSection = PLOT_SECTION.PLOT;
+        else if (innerX >= 6 && innerX <= 32 && innerZ >= 6 && innerZ <= 32)
+            plotLocData.plotSection = PLOT_SECTION.INNER_LINE;
+        else if (innerX >= 1 && innerX <= 37 && innerZ >= 1 && innerZ <= 37)
+            plotLocData.plotSection = PLOT_SECTION.SKIN;
+        else if (innerX <= 38 && innerZ <= 38)
+            plotLocData.plotSection = PLOT_SECTION.OUTER_LINE;
+        else if (innerX >= 39 && innerZ <= 38)
+            plotLocData.plotSection = PLOT_SECTION.ROAD_LEFT;
+        else if (innerZ >= 39 && innerX <= 38)
+            plotLocData.plotSection = PLOT_SECTION.ROAD_TOP;
+        else
+            plotLocData.plotSection = PLOT_SECTION.ROAD_EDGE;
+
+        return plotLocData;
     }
 
     public BlockData getDefaultWorldBlock(int x, int y, int z)
