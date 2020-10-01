@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import woolyung.main.plot.Data.PlayerData;
+import woolyung.main.plot.Data.PlayerDataEx;
 import woolyung.main.plot.Data.PlotData;
+import woolyung.main.plot.Data.PlotDataEx;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -60,7 +62,7 @@ public class PlotDatabase
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot'").getInt(1) == 0)
                 statement.execute("CREATE TABLE plot (pos TEXT PRIMARY KEY, skin1 INTEGER, skin2 INTEGER, skin3 INTEGER)");
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player'").getInt(1) == 0)
-                statement.execute("CREATE TABLE player (uuid TEXT PRIMARY KEY, max_plot INTEGER)");
+                statement.execute("CREATE TABLE player (uuid TEXT PRIMARY KEY, name TEXT, max_plot INTEGER)");
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player_plot'").getInt(1) == 0)
                 statement.execute("CREATE TABLE player_plot (uuid TEXT, authority TEXT, pos TEXT, FOREIGN KEY(pos) REFERENCES plot(pos) ON DELETE CASCADE)");
         }
@@ -101,6 +103,42 @@ public class PlotDatabase
         return null;
     }
 
+    public PlotDataEx getPlotDataEx(int posX, int posZ)
+    {
+        PlotData plotData = getPlotData(posX, posZ);
+        if (plotData == null) return null;
+
+        try
+        {
+            PlotDataEx plotDataEx = new PlotDataEx();
+            plotDataEx.posX = plotData.posX;
+            plotDataEx.posZ = plotData.posZ;
+            plotDataEx.skin1 = plotData.skin1;
+            plotDataEx.skin2 = plotData.skin2;
+            plotDataEx.skin3 = plotData.skin3;
+
+            ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE pos = '" + posX + ":" + posZ + "'");
+            while (result.next())
+            {
+                String authority = result.getString("authority");
+                if (authority.compareTo("owner") == 0)
+                    plotDataEx.owner = result.getString("uuid");
+                else if (authority.compareTo("helper") == 0)
+                    plotDataEx.helpers.add(result.getString("uuid"));
+                else if (authority.compareTo("deny") == 0)
+                    plotDataEx.denies.add(result.getString("uuid"));
+            }
+
+            return plotDataEx;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public PlayerData getPlayerData(Player player)
     {
         try
@@ -109,13 +147,72 @@ public class PlotDatabase
                 return null;
             ResultSet result = statement.executeQuery("SELECT * FROM player WHERE uuid = '" + player.getUniqueId() + "'");
             String uuid = result.getString("uuid");
+            String name = result.getString("name");
             int maxPlot = result.getInt("max_plot");
 
             PlayerData data = new PlayerData();
             data.uuid = uuid;
             data.maxPlot = maxPlot;
+            data.name = name;
 
             return data;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public PlayerData getPlayerData(String uuid)
+    {
+        try
+        {
+            if (statement.executeQuery("SELECT count(*) FROM player WHERE uuid = '" + uuid +"'").getInt(1) == 0)
+                return null;
+            ResultSet result = statement.executeQuery("SELECT * FROM player WHERE uuid = '" + uuid + "'");
+            String name = result.getString("name");
+            int maxPlot = result.getInt("max_plot");
+
+            PlayerData data = new PlayerData();
+            data.uuid = uuid;
+            data.maxPlot = maxPlot;
+            data.name = name;
+
+            return data;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public PlayerDataEx getPlayerDataEx(Player player)
+    {
+        PlayerData playerData = getPlayerData(player);
+        if (playerData == null) return null;
+
+        try
+        {
+            PlayerDataEx playerDataEx = new PlayerDataEx();
+            playerDataEx.maxPlot = playerData.maxPlot;
+            playerDataEx.uuid = playerData.uuid;
+            playerDataEx.name = playerData.name;
+
+            ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE uuid = '" + player.getUniqueId() + "'");
+            while (result.next())
+            {
+                String authority = result.getString("authority");
+                if (authority.compareTo("owner") == 0)
+                    playerDataEx.plots.add(result.getString("pos"));
+            }
+
+            playerDataEx.plotCount = playerDataEx.plots.size();
+
+            return playerDataEx;
         }
         catch (Exception e)
         {
@@ -130,7 +227,9 @@ public class PlotDatabase
         try
         {
             if (statement.executeQuery("SELECT count(*) FROM player WHERE uuid = '" + player.getUniqueId() +"'").getInt(1) == 0)
-                statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', 1)");
+                statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', 1)");
+            else
+                statement.executeQuery("UPDATE player SET name = '" + player.getName() + "' WHERE uuid = '" + player.getUniqueId() + "'");
         }
         catch (Exception e)
         {

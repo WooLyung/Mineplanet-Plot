@@ -8,3 +8,6 @@ message:
     not_plot: "플롯이 아님"
     not_plot_world: "플롯 월드가 아님"
     buy_plot: "플롯 구매!"
+  none:
+    not_plot: "플롯이 아님"
+    not_plot_world: "플롯 월드가 아님"
