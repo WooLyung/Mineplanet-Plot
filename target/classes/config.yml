@@ -8,6 +8,15 @@ message:
     not_plot: "플롯이 아님"
     not_plot_world: "플롯 월드가 아님"
     buy_plot: "플롯 구매!"
-  none:
+  info:
     not_plot: "플롯이 아님"
     not_plot_world: "플롯 월드가 아님"
+  home:
+    no_plot: '플롯이 없음'
+    no_plot2: '플롯이 그 만큼 없음'
+    teleport: '텔레포트함'
+    error: '명령어 에러'
+  tp:
+    no_arg: '좌표 입력하셈'
+    teleport: '텔레포트함'
+    error: '명령어 에러'

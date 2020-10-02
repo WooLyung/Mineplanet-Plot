@@ -59,14 +59,30 @@ public class PlotDatabase
         try
         {
             statement.execute("PRAGMA foreign_keys = ON");
+
+            // 플롯 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot'").getInt(1) == 0)
                 statement.execute("CREATE TABLE plot (pos TEXT PRIMARY KEY, extend TEXT, FOREIGN KEY(extend) REFERENCES plot_data(pos))");
+
+            // 플레이어 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player'").getInt(1) == 0)
                 statement.execute("CREATE TABLE player (uuid TEXT PRIMARY KEY, name TEXT, max_plot INTEGER)");
+
+            // 플롯-플레이어 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player_plot'").getInt(1) == 0)
                 statement.execute("CREATE TABLE player_plot (uuid TEXT, authority TEXT, pos TEXT, FOREIGN KEY(pos) REFERENCES plot(pos) ON DELETE CASCADE)");
+
+            // 플롯 데이터 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_data'").getInt(1) == 0)
                 statement.execute("CREATE TABLE plot_data (pos TEXT PRIMARY KEY, skin1 INTEGER, skin2 INTEGER, skin3 INTEGER, biome TEXT, pvp INTEGER, click INTEGER, block_click INTEGER, item_clear INTEGER)");
+
+            // 플롯 병합2 테이블
+            if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_extend2'").getInt(1) == 0)
+                statement.execute("CREATE TABLE plot_extend2 (plot1 TEXT, plot2 TEXT, FOREIGN KEY(plot1) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot2) REFERENCES plot(pos) ON DELETE CASCADE)");
+
+            // 플롯 병합4 테이블
+            if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_extend4'").getInt(1) == 0)
+                statement.execute("CREATE TABLE plot_extend4 (plot1 TEXT, plot2 TEXT, plot3 TEXT, plot4 TEXT, FOREIGN KEY(plot1) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot2) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot3) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot4) REFERENCES plot(pos) ON DELETE CASCADE)");
         }
         catch (Exception e)
         {
@@ -235,7 +251,7 @@ public class PlotDatabase
             if (statement.executeQuery("SELECT count(*) FROM player WHERE uuid = '" + player.getUniqueId() +"'").getInt(1) == 0)
                 statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', 1)");
             else
-                statement.executeQuery("UPDATE player SET name = '" + player.getName() + "' WHERE uuid = '" + player.getUniqueId() + "'");
+                statement.execute("UPDATE player SET name = '" + player.getName() + "' WHERE uuid = '" + player.getUniqueId() + "'");
         }
         catch (Exception e)
         {

@@ -24,6 +24,10 @@ public class PlotWorld
         world = Bukkit.getServer().createWorld(wc);
     }
 
+    public World getWorld() {
+        return world;
+    }
+
     public int getHeight()
     {
         return MineplanetPlot.instance.getConfig().getInt("height");

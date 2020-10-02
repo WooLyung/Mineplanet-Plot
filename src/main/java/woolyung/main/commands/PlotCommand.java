@@ -1,5 +1,6 @@
 package woolyung.main.commands;
 
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,6 +10,8 @@ import woolyung.main.plot.Data.PlayerDataEx;
 import woolyung.main.plot.Data.PlotDataEx;
 import woolyung.main.plot.Data.PlotLocData;
 import woolyung.util.UUIDUtil;
+
+import java.util.concurrent.ExecutionException;
 
 public class PlotCommand implements CommandExecutor
 {
@@ -21,31 +24,98 @@ public class PlotCommand implements CommandExecutor
 
             if (args.length == 0)
             {
-                arg_none(sender, command, label, args, player);
-                return true;
+
             }
-            if (args[0].compareTo("help") == 0 || args[0].compareTo("?") == 0)
+            else if (args[0].compareTo("help") == 0 || args[0].compareTo("?") == 0)
             {
                 player.sendMessage("플롯 명령어 도움말");
-                return true;
             }
-            if (args[0].compareTo("list") == 0)
+            else if (args[0].compareTo("info") == 0)
+            {
+                arg_info(sender, command, label, args, player);
+            }
+            else if (args[0].compareTo("list") == 0)
             {
                 arg_list(sender, command, label, args, player);
-                return true;
             }
-            if (args[0].compareTo("buy") == 0)
+            else if (args[0].compareTo("buy") == 0)
             {
                 arg_buy(sender, command, label, args, player);
-                return true;
             }
-            if (args[0].compareTo("log") == 0)
+            else if (args[0].compareTo("home") == 0)
             {
-                player.sendMessage(MineplanetPlot.instance.getPlotWorld().getPlotLocData(player.getLocation().getBlockX(), player.getLocation().getBlockZ()).extendSection + "");
+                arg_home(sender, command, label, args, player);
+            }
+            else if (args[0].compareTo("tp") == 0)
+            {
+                arg_tp(sender, command, label, args, player);
             }
         }
 
         return true;
+    }
+
+    private void arg_tp(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int x, z;
+
+        if (args.length < 3)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.no_arg")); // 좌표 입력하셈
+            return;
+        }
+
+        try
+        {
+            x = Integer.parseInt(args[1]);
+            z = Integer.parseInt(args[2]);
+        }
+        catch (Exception e)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.error")); // 명령어 에러
+            return;
+        }
+
+        int posX = x * 44;
+        int posZ = z * 44 - 20;
+
+        player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.teleport")); // 이동함
+        Location location = new Location(MineplanetPlot.instance.getPlotWorld().getWorld(), posX, MineplanetPlot.instance.getConfig().getInt("height") + 1, posZ);
+        player.teleport(location);
+    }
+
+    private void arg_home(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int plot = 0;
+        try
+        {
+            if (args.length >= 2) plot = Integer.parseInt(args[1]);
+        }
+        catch (Exception e)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.error")); // 명령어 에러
+            return;
+        }
+
+        PlayerDataEx playerDataEx = MineplanetPlot.instance.getPlotDatabase().getPlayerDataEx(player);
+        if (playerDataEx == null)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.no_plot")); // 플롯이 없음
+            return;
+        }
+        if (playerDataEx.plotCount <= plot)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.no_plot2")); // 플롯이 그 만큼 없음
+            return;
+        }
+
+        String[] pos = playerDataEx.plots.get(plot).split(":");
+        int posX = Integer.parseInt(pos[0]) * 44;
+        int posZ = Integer.parseInt(pos[1]) * 44 - 20;
+
+        player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.teleport")); // 이동함
+        Location location = new Location(MineplanetPlot.instance.getPlotWorld().getWorld(), posX, MineplanetPlot.instance.getConfig().getInt("height") + 1, posZ);
+        player.teleport(location);
     }
 
     private void arg_list(CommandSender sender, Command command, String label, String[] args, Player player)
@@ -57,7 +127,7 @@ public class PlotCommand implements CommandExecutor
             player.sendMessage(str);
     }
 
-    private void arg_none(CommandSender sender, Command command, String label, String[] args, Player player)
+    private void arg_info(CommandSender sender, Command command, String label, String[] args, Player player)
     {
         int player_posX = player.getLocation().getBlockX();
         int player_posZ = player.getLocation().getBlockZ();
@@ -66,7 +136,7 @@ public class PlotCommand implements CommandExecutor
 
         if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
         {
-            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.none.not_plot_world")); // 플롯 월드가 아님
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.info.not_plot_world")); // 플롯 월드가 아님
             return;
         }
 
@@ -74,7 +144,7 @@ public class PlotCommand implements CommandExecutor
                 && plotLocData.plotSection != PlotLocData.PLOT_SECTION.INNER_LINE
                 && plotLocData.plotSection != PlotLocData.PLOT_SECTION.SKIN)
         {
-            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.none.not_plot")); // 플롯이 아님
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.info.not_plot")); // 플롯이 아님
             return;
         }
 
@@ -139,7 +209,6 @@ public class PlotCommand implements CommandExecutor
         }
 
         player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.buy.buy_plot")); // 플롯 구매함
-        MineplanetPlot.instance.getPlotDatabase().insertPlotData(plotLocData.plotLocX, plotLocData.plotLocZ);
-        MineplanetPlot.instance.getPlotDatabase().insertPlayerPlotData(plotLocData.plotLocX, plotLocData.plotLocZ, player.getUniqueId().toString(), "owner");
+        MineplanetPlot.instance.getPlotManager().buyPlot(player, plotDataEx.posX, plotDataEx.posZ);
     }
 }
