@@ -70,23 +70,23 @@ public class PlotWorld
         else
             plotLocData.plotSection = PlotLocData.PLOT_SECTION.ROAD_EDGE;
 
-        if (innerX <= 6)
+        if (innerZ <= 6)
         {
-            if (innerZ <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT_BOTTOM;
-            else if (innerZ <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.BOTTOM;
-            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT_BOTTOM;
+            if (innerX <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT_BOTTOM;
+            else if (innerX <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.BOTTOM;
+            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT_BOTTOM;
         }
-        else if (innerX <= 31)
+        else if (innerZ <= 31)
         {
-            if (innerZ <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT;
-            else if (innerZ <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.CENTER;
-            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT;
+            if (innerX <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT;
+            else if (innerX <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.CENTER;
+            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT;
         }
         else
         {
-            if (innerZ <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT_TOP;
-            else if (innerZ <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.TOP;
-            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT_TOP;
+            if (innerX <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT_TOP;
+            else if (innerX <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.TOP;
+            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT_TOP;
         }
 
         return plotLocData;
@@ -135,32 +135,9 @@ public class PlotWorld
                 ((Directional)data).setFacing(BlockFace.SOUTH);
                 return data;
             }
-            else if (x2 == 31 && z2 == 31) // 북동쪽
+            else if ((x2 == 31 && z2 == 31) || (x2 == 13 && z2 == 31) || (x2 == 31 && z2 == 13) || (x2 == 13 && z2 == 13)) // 모서리
             {
-                BlockData data = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-                ((Directional)data).setFacing(BlockFace.SOUTH);
-                ((Stairs)data).setShape(Stairs.Shape.OUTER_LEFT);
-                return data;
-            }
-            else if (x2 == 13 && z2 == 31) // 북서쪽
-            {
-                BlockData data = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-                ((Directional)data).setFacing(BlockFace.WEST);
-                ((Stairs)data).setShape(Stairs.Shape.OUTER_LEFT);
-                return data;
-            }
-            else if (x2 == 31 && z2 == 13) // 남동쪽
-            {
-                BlockData data = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-                ((Directional)data).setFacing(BlockFace.EAST);
-                ((Stairs)data).setShape(Stairs.Shape.OUTER_LEFT);
-                return data;
-            }
-            else if (x2 == 13 && z2 == 13) // 남서쪽
-            {
-                BlockData data = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-                ((Directional)data).setFacing(BlockFace.NORTH);
-                ((Stairs)data).setShape(Stairs.Shape.OUTER_LEFT);
+                BlockData data = Bukkit.createBlockData(Material.BIRCH_PLANKS);
                 return data;
             }
         }

@@ -50,9 +50,48 @@ public class PlotCommand implements CommandExecutor
             {
                 arg_tp(sender, command, label, args, player);
             }
+            else if (args[0].compareTo("merge") == 0)
+            {
+                if (player.hasPermission("mmcplanetplot.permission.merge"))
+                    arg_merge(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
+    }
+
+    private void arg_merge(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = 0;
+        if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.RIGHT) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x - 1, z);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.LEFT) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x + 1, z);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.TOP) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x, z + 1);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.BOTTOM) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x, z - 1);
+        else
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.not_between")); // 플롯 사이가 아님
+            return;
+        }
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.no_owner")); // 주인 없음
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.diff_owner")); // 주인 다름
+        else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.already_merged")); // 이미 병합된 플롯
     }
 
     private void arg_tp(CommandSender sender, Command command, String label, String[] args, Player player)
@@ -73,6 +112,13 @@ public class PlotCommand implements CommandExecutor
         catch (Exception e)
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.error")); // 명령어 에러
+            return;
+        }
+
+        int radius = MineplanetPlot.instance.getConfig().getInt("radius");
+        if (x >= radius || x <= -radius || z >= radius || z <= -radius)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.over_radius")); // 범위 넘음
             return;
         }
 
@@ -155,6 +201,7 @@ public class PlotCommand implements CommandExecutor
         else
         {
             player.sendMessage("[" + plotLocData.plotLocX + ":" + plotLocData.plotLocZ + "] " + UUIDUtil.getName(plotDataEx.owner) + " 님의 플롯 ");
+            player.sendMessage("[" + plotDataEx.extend + "] 의 하위 플롯 ");
             player.sendMessage("도우미 리스트 : ");
             for (String str : plotDataEx.helpers)
                 player.sendMessage(UUIDUtil.getName(str));
@@ -208,7 +255,14 @@ public class PlotCommand implements CommandExecutor
             return;
         }
 
+        int radius = MineplanetPlot.instance.getConfig().getInt("radius");
+        if (plotLocData.plotLocX >= radius || plotLocData.plotLocX <= -radius || plotLocData.plotLocZ >= radius || plotLocData.plotLocZ <= -radius)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.over_radius")); // 범위 넘음
+            return;
+        }
+
         player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.buy.buy_plot")); // 플롯 구매함
-        MineplanetPlot.instance.getPlotManager().buyPlot(player, plotDataEx.posX, plotDataEx.posZ);
+        MineplanetPlot.instance.getPlotManager().buyPlot(player, plotLocData.plotLocX, plotLocData.plotLocZ);
     }
 }

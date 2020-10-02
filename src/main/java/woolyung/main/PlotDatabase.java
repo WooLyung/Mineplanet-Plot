@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class PlotDatabase
 {
@@ -62,7 +63,7 @@ public class PlotDatabase
 
             // 플롯 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot'").getInt(1) == 0)
-                statement.execute("CREATE TABLE plot (pos TEXT PRIMARY KEY, extend TEXT, FOREIGN KEY(extend) REFERENCES plot_data(pos))");
+                statement.execute("CREATE TABLE plot (pos TEXT PRIMARY KEY, extend TEXT)");
 
             // 플레이어 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player'").getInt(1) == 0)
@@ -70,7 +71,7 @@ public class PlotDatabase
 
             // 플롯-플레이어 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player_plot'").getInt(1) == 0)
-                statement.execute("CREATE TABLE player_plot (uuid TEXT, authority TEXT, pos TEXT, FOREIGN KEY(pos) REFERENCES plot(pos) ON DELETE CASCADE)");
+                statement.execute("CREATE TABLE player_plot (uuid TEXT, authority TEXT, pos TEXT, FOREIGN KEY(pos) REFERENCES plot_data(pos) ON DELETE CASCADE)");
 
             // 플롯 데이터 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_data'").getInt(1) == 0)
@@ -224,12 +225,27 @@ public class PlotDatabase
             playerDataEx.uuid = playerData.uuid;
             playerDataEx.name = playerData.name;
 
+            ArrayList<String> plots = new ArrayList<>();
+
             ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE uuid = '" + player.getUniqueId() + "'");
             while (result.next())
             {
                 String authority = result.getString("authority");
+                String pos = result.getString("pos");
+
                 if (authority.compareTo("owner") == 0)
-                    playerDataEx.plots.add(result.getString("pos"));
+                {
+                    plots.add(pos);
+                }
+            }
+
+            for (String pos : plots)
+            {
+                ResultSet result2 = statement.executeQuery("SELECT * FROM plot WHERE extend = '" + pos + "'");
+                while (result2.next())
+                {
+                    playerDataEx.plots.add(result2.getString("pos"));
+                }
             }
 
             playerDataEx.plotCount = playerDataEx.plots.size();
@@ -244,14 +260,102 @@ public class PlotDatabase
         return null;
     }
 
+    public boolean getIsExtended(int x1, int z1, int x2, int z2)
+    {
+        try {
+            String pos1 = x1 + ":" + z1;
+            String pos2 = x2 + ":" + z2;
+
+            if (statement.executeQuery("SELECT count(*) FROM plot_extend2 WHERE (plot1 = '" + pos1 + "' AND plot2 = '" + pos2 + "') OR (plot1 = '" + pos2 + "' AND plot2 = '" + pos1 + "')").getInt(1) == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void initPlayerdata(Player player)
     {
         try
         {
             if (statement.executeQuery("SELECT count(*) FROM player WHERE uuid = '" + player.getUniqueId() +"'").getInt(1) == 0)
-                statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', 1)");
+                statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', 100)");
             else
                 statement.execute("UPDATE player SET name = '" + player.getName() + "' WHERE uuid = '" + player.getUniqueId() + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePlotData(int x, int z)
+    {
+        try
+        {
+            String pos = x + ":" + z;
+
+            statement.execute("DELETE FROM plot_data WHERE pos = '" + pos + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeExtends(int x1, int z1, int x2, int z2) // (x1, z1)가 확장기준인 플롯들을 (x2, z2)로 바꾸는 함수
+    {
+        try
+        {
+            String pos1 = x1 + ":" + z1;
+            ArrayList<String> plots = new ArrayList<>();
+
+            ResultSet result = statement.executeQuery("SELECT * FROM plot WHERE extend = '" + pos1 + "'");
+            while (result.next())
+            {
+                plots.add(result.getString("pos"));
+            }
+
+            for (String pos : plots)
+            {
+                String[] posSplit = pos.split(":");
+                changeExtend(Integer.parseInt(posSplit[0]), Integer.parseInt(posSplit[1]), x2, z2);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeExtend(int x1, int z1, int x2, int z2)
+    {
+        try
+        {
+            String pos1 = x1 + ":" + z1;
+            String pos2 = x2 + ":" + z2;
+
+            statement.execute("UPDATE plot SET extend = '" + pos2 + "' WHERE pos = '" + pos1 + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertExtend2(int x1, int z1, int x2, int z2)
+    {
+        try
+        {
+            String pos1 = x1 + ":" + z1;
+            String pos2 = x2 + ":" + z2;
+
+            statement.execute("INSERT INTO plot_extend2 VALUES ('" + pos1 + "', '" + pos2 + "')");
         }
         catch (Exception e)
         {
