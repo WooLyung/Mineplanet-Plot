@@ -60,11 +60,13 @@ public class PlotDatabase
         {
             statement.execute("PRAGMA foreign_keys = ON");
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot'").getInt(1) == 0)
-                statement.execute("CREATE TABLE plot (pos TEXT PRIMARY KEY, skin1 INTEGER, skin2 INTEGER, skin3 INTEGER)");
+                statement.execute("CREATE TABLE plot (pos TEXT PRIMARY KEY, extend TEXT, FOREIGN KEY(extend) REFERENCES plot_data(pos))");
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player'").getInt(1) == 0)
                 statement.execute("CREATE TABLE player (uuid TEXT PRIMARY KEY, name TEXT, max_plot INTEGER)");
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'player_plot'").getInt(1) == 0)
                 statement.execute("CREATE TABLE player_plot (uuid TEXT, authority TEXT, pos TEXT, FOREIGN KEY(pos) REFERENCES plot(pos) ON DELETE CASCADE)");
+            if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_data'").getInt(1) == 0)
+                statement.execute("CREATE TABLE plot_data (pos TEXT PRIMARY KEY, skin1 INTEGER, skin2 INTEGER, skin3 INTEGER, biome TEXT, pvp INTEGER, click INTEGER, block_click INTEGER, item_clear INTEGER)");
         }
         catch (Exception e)
         {
@@ -82,16 +84,12 @@ public class PlotDatabase
             if (statement.executeQuery("SELECT count(*) FROM plot WHERE pos = '" + posX + ":" + posZ + "'").getInt(1) == 0)
                 return null;
             ResultSet result = statement.executeQuery("SELECT * FROM plot WHERE pos = '" + posX + ":" + posZ + "'");
-            int skin1 = result.getInt("skin1");
-            int skin2 = result.getInt("skin2");
-            int skin3 = result.getInt("skin3");
+            String extend = result.getString("extend");
 
             PlotData data = new PlotData();
             data.posX = posX;
             data.posZ = posZ;
-            data.skin1 = skin1;
-            data.skin2 = skin2;
-            data.skin3 = skin3;
+            data.extend = extend;
 
             return data;
         }
@@ -113,11 +111,19 @@ public class PlotDatabase
             PlotDataEx plotDataEx = new PlotDataEx();
             plotDataEx.posX = plotData.posX;
             plotDataEx.posZ = plotData.posZ;
-            plotDataEx.skin1 = plotData.skin1;
-            plotDataEx.skin2 = plotData.skin2;
-            plotDataEx.skin3 = plotData.skin3;
+            plotDataEx.extend = plotData.extend;
 
-            ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE pos = '" + posX + ":" + posZ + "'");
+            ResultSet result2 = statement.executeQuery("SELECT * FROM plot_data WHERE pos = '" + plotData.extend + "'");
+            plotDataEx.skin1 = result2.getInt("skin1");
+            plotDataEx.skin2 = result2.getInt("skin2");
+            plotDataEx.skin3 = result2.getInt("skin3");
+            plotDataEx.biome = result2.getString("biome");
+            plotDataEx.pvp = result2.getInt("pvp") == 1;
+            plotDataEx.click = result2.getInt("click") == 1;
+            plotDataEx.blockClick = result2.getInt("block_click") == 1;
+            plotDataEx.itemClear = result2.getInt("item_clear") == 1;
+
+            ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE pos = '" + plotDataEx.extend + "'");
             while (result.next())
             {
                 String authority = result.getString("authority");
@@ -242,7 +248,9 @@ public class PlotDatabase
         try
         {
             String pos = x + ":" + z;
-            statement.execute("INSERT INTO plot VALUES ('" + pos + "', 0, 0, 0)");
+
+            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', 0, 0, 0, 'PLAINS', 0, 1, 0, 1)");
+            statement.execute("INSERT INTO plot VALUES ('" + pos + "', '" + pos + "')");
         }
         catch (Exception e)
         {
