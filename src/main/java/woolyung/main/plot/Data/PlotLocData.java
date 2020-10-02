@@ -1,7 +1,5 @@
 package woolyung.main.plot.Data;
 
-import woolyung.main.plot.PlotWorld;
-
 public class PlotLocData
 {
     public enum PLOT_SECTION
@@ -12,9 +10,15 @@ public class PlotLocData
         SKIN
     }
 
+    public enum EXTEND_SECTION
+    {
+        CENTER, BOTTOM, TOP, LEFT, RIGHT, LEFT_BOTTOM, LEFT_TOP, RIGHT_TOP, RIGHT_BOTTOM
+    }
+
     public int plotLocX;
     public int plotLocZ;
     public int plotInnerLocX;
     public int plotInnerLocZ;
     public PLOT_SECTION plotSection;
+    public EXTEND_SECTION extendSection;
 }

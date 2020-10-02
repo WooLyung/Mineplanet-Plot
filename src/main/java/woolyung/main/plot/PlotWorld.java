@@ -66,6 +66,25 @@ public class PlotWorld
         else
             plotLocData.plotSection = PlotLocData.PLOT_SECTION.ROAD_EDGE;
 
+        if (innerX <= 6)
+        {
+            if (innerZ <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT_BOTTOM;
+            else if (innerZ <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.BOTTOM;
+            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT_BOTTOM;
+        }
+        else if (innerX <= 31)
+        {
+            if (innerZ <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT;
+            else if (innerZ <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.CENTER;
+            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT;
+        }
+        else
+        {
+            if (innerZ <= 6) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.LEFT_TOP;
+            else if (innerZ <= 31) plotLocData.extendSection = PlotLocData.EXTEND_SECTION.TOP;
+            else plotLocData.extendSection = PlotLocData.EXTEND_SECTION.RIGHT_TOP;
+        }
+
         return plotLocData;
     }
 

@@ -39,6 +39,10 @@ public class PlotCommand implements CommandExecutor
                 arg_buy(sender, command, label, args, player);
                 return true;
             }
+            if (args[0].compareTo("log") == 0)
+            {
+                player.sendMessage(MineplanetPlot.instance.getPlotWorld().getPlotLocData(player.getLocation().getBlockX(), player.getLocation().getBlockZ()).extendSection + "");
+            }
         }
 
         return true;
