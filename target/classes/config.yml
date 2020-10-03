@@ -31,5 +31,10 @@ message:
     no_owner: "주인이 없는 플롯"
     diff_owner: "주인이 다른 플롯"
     already_merged: "이미 병합된 플롯"
-    no_merged: "인접한 플롯이 모두 병합된 상태가 아님"
+    not_merged: "인접한 플롯이 모두 병합된 상태가 아님"
     success: "병합 성공"
+  detach:
+    not_plot_world: "플롯 월드가 아님"
+    no_owner: "주인이 없는 플롯"
+    not_merged: "병합된 플롯이 아님"
+    success: "병합 해제 성공"

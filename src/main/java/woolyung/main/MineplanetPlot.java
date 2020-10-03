@@ -96,7 +96,7 @@ public final class MineplanetPlot extends JavaPlugin
 
     private boolean createDataDirectory()
     {
-        File folder = new File(getDataFolder().getPath() + "/Datas");
+        File folder = new File(getDataFolder().getPath() + "/datas");
 
         if (!folder.exists())
         {

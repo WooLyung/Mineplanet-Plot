@@ -57,6 +57,13 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("detach") == 0)
+            {
+                if (player.hasPermission("mmcplanetplot.permission.detach"))
+                    arg_detach(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
@@ -96,7 +103,29 @@ public class PlotCommand implements CommandExecutor
         else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.no_owner")); // 주인 없음
         else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.diff_owner")); // 주인 다름
         else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.already_merged")); // 이미 병합된 플롯
-        else if (result == 5) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.no_merged")); // 인접한 플롯이 모두 병합된 상태가 아님
+        else if (result == 5) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.not_merged")); // 인접한 플롯이 모두 병합된 상태가 아님
+    }
+
+    private void arg_detach(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().detachPlot(x, z);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.no_owner")); // 주인 없음
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.not_merged")); // 병합 안된 플롯
     }
 
     private void arg_tp(CommandSender sender, Command command, String label, String[] args, Player player)

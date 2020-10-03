@@ -28,7 +28,7 @@ public class PlotDatabase
 
     private void sqliteSetup()
     {
-        path = MineplanetPlot.instance.getDataFolder() + "/Datas/";
+        path = MineplanetPlot.instance.getDataFolder() + "/datas/";
         file = "plot.db";
 
         try
@@ -279,6 +279,62 @@ public class PlotDatabase
         }
     }
 
+    public boolean getIsExtended(String pos1, String pos2)
+    {
+        try {
+            if (statement.executeQuery("SELECT count(*) FROM plot_extend2 WHERE (plot1 = '" + pos1 + "' AND plot2 = '" + pos2 + "') OR (plot1 = '" + pos2 + "' AND plot2 = '" + pos1 + "')").getInt(1) == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void detachExtend2(int x, int z)
+    {
+        try {
+            String pos = x + ":" + z;
+
+            statement.execute("DELETE FROM plot_extend2 WHERE (plot1 = '" + pos + "' OR plot2 = '" + pos + "')");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void detachExtend4(int x, int z)
+    {
+        try
+        {
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + x + ":" + z + "' AND plot2 = '" + (x + 1) + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + x + ":" + z + "' AND plot2 = '" + (x - 1) + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + x + ":" + z + "' AND plot2 = '" + (x + 1) + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + x + ":" + z + "' AND plot2 = '" + (x - 1) + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + (x + 1) + ":" + z + "' AND plot2 = '" + x + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + (x + 1) + ":" + z + "' AND plot2 = '" + x + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + (x - 1) + ":" + z + "' AND plot2 = '" + x + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot1 = '" + (x - 1) + ":" + z + "' AND plot2 = '" + x + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + x + ":" + z + "' AND plot1 = '" + (x + 1) + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + x + ":" + z + "' AND plot1 = '" + (x - 1) + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + x + ":" + z + "' AND plot1 = '" + (x + 1) + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + x + ":" + z + "' AND plot1 = '" + (x - 1) + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + (x + 1) + ":" + z + "' AND plot1 = '" + x + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + (x + 1) + ":" + z + "' AND plot1 = '" + x + ":" + (z - 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + (x - 1) + ":" + z + "' AND plot1 = '" + x + ":" + (z + 1) + "')");
+            statement.execute("DELETE FROM plot_extend4 WHERE (plot2 = '" + (x - 1) + ":" + z + "' AND plot1 = '" + x + ":" + (z - 1) + "')");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public boolean getIsExtended4(int x1, int z1, int x2, int z2)
     {
         try {
@@ -316,12 +372,65 @@ public class PlotDatabase
         }
     }
 
+    public ArrayList<String> getPlotByExtendPlot(String pos)
+    {
+        ArrayList<String> returnValue = new ArrayList<>();
+
+        try
+        {
+            ResultSet result = statement.executeQuery("SELECT * FROM plot WHERE extend = '" + pos + "'");
+            while (result.next())
+            {
+                returnValue.add(result.getString("pos"));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return returnValue;
+    }
+
+    public ArrayList<String> getPlotByExtendPlot(int x, int z)
+    {
+        ArrayList<String> returnValue = new ArrayList<>();
+        String pos = x + ":" + z;
+
+        try
+        {
+            ResultSet result = statement.executeQuery("SELECT * FROM plot WHERE extend = '" + pos + "'");
+            while (result.next())
+            {
+                returnValue.add(result.getString("pos"));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return returnValue;
+    }
+
     public void deletePlotData(int x, int z)
     {
         try
         {
             String pos = x + ":" + z;
 
+            statement.execute("DELETE FROM plot_data WHERE pos = '" + pos + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePlotData(String pos)
+    {
+        try
+        {
             statement.execute("DELETE FROM plot_data WHERE pos = '" + pos + "'");
         }
         catch (Exception e)
@@ -370,6 +479,18 @@ public class PlotDatabase
         }
     }
 
+    public void changeExtend(String pos1, String pos2)
+    {
+        try
+        {
+            statement.execute("UPDATE plot SET extend = '" + pos2 + "' WHERE pos = '" + pos1 + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void insertExtend2(int x1, int z1, int x2, int z2)
     {
         try
@@ -400,6 +521,24 @@ public class PlotDatabase
         }
     }
 
+    public void insertPlotData(String pos, PlotDataEx data)
+    {
+        try
+        {
+            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', " + data.skin1 + ", " + data.skin2 + ", " + data.skin3 + ", '" + data.biome + "', " + data.pvp + ", " + data.click + ", " + data.blockClick + ", " + data.itemClear + ")");
+
+            insertPlayerPlotData(pos, data.owner, "owner");
+            for (String player : data.helpers)
+                insertPlayerPlotData(pos, player, "helper");
+            for (String player : data.denies)
+                insertPlayerPlotData(pos, player, "deny");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void insertPlotData(int x, int z)
     {
         try
@@ -408,6 +547,18 @@ public class PlotDatabase
 
             statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', 0, 0, 0, 'PLAINS', 0, 1, 0, 1)");
             statement.execute("INSERT INTO plot VALUES ('" + pos + "', '" + pos + "')");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertPlayerPlotData(String pos, String uuid, String authority)
+    {
+        try
+        {
+            statement.execute("INSERT INTO player_plot VALUES ('" + uuid + "', '" + authority + "', '" + pos + "')");
         }
         catch (Exception e)
         {
