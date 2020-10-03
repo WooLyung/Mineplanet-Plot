@@ -52,14 +52,14 @@ public class PlotCommand implements CommandExecutor
             }
             else if (args[0].compareTo("merge") == 0)
             {
-                if (player.hasPermission("mmcplanetplot.permission.merge"))
+                if (player.hasPermission("mcplanetplot.permission.merge"))
                     arg_merge(sender, command, label, args, player);
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
             else if (args[0].compareTo("detach") == 0)
             {
-                if (player.hasPermission("mmcplanetplot.permission.detach"))
+                if (player.hasPermission("mcplanetplot.permission.detach"))
                     arg_detach(sender, command, label, args, player);
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));

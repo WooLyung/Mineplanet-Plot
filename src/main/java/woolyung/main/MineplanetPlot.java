@@ -1,6 +1,8 @@
 package woolyung.main;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import woolyung.main.Events.BlockBreakEventListener;
+import woolyung.main.Events.BlockPlaceEventListener;
 import woolyung.main.Events.PlayerJoinEventListener;
 import woolyung.main.commands.PlotCommand;
 import woolyung.main.plot.PlotManager;
@@ -57,6 +59,8 @@ public final class MineplanetPlot extends JavaPlugin
         getCommand("plot").setExecutor(new PlotCommand());
 
         getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakEventListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceEventListener(), this);
     }
 
     private void createConfig()

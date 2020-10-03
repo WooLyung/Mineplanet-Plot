@@ -3,10 +3,7 @@ package woolyung.main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import woolyung.main.plot.Data.PlayerData;
-import woolyung.main.plot.Data.PlayerDataEx;
-import woolyung.main.plot.Data.PlotData;
-import woolyung.main.plot.Data.PlotDataEx;
+import woolyung.main.plot.Data.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -344,7 +341,7 @@ public class PlotDatabase
             String pos4 = x1 + ":" + z2;
 
             if (statement.executeQuery("SELECT count(*) FROM plot_extend4 WHERE (plot1 = '" + pos1 + "' AND plot2 = '" + pos2 + "') OR (plot1 = '" + pos2 + "' AND plot2 = '" + pos1 + "')").getInt(1) == 0
-                    && statement.executeQuery("SELECT count(*) FROM plot_extend4 WHERE (plot1 = '" + pos3 + "' AND plot2 = '" + pos4 + "') OR (plot1 = '" + pos2 + "' AND plot2 = '" + pos1 + "')").getInt(1) == 0)
+                    && statement.executeQuery("SELECT count(*) FROM plot_extend4 WHERE (plot1 = '" + pos3 + "' AND plot2 = '" + pos4 + "') OR (plot1 = '" + pos4 + "' AND plot2 = '" + pos3 + "')").getInt(1) == 0)
             {
                 return false;
             }
@@ -577,5 +574,29 @@ public class PlotDatabase
         {
             e.printStackTrace();
         }
+    }
+
+    public PlotDataEx getPlotInnerData(int x, int z)
+    {
+        PlotLocData locData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(x, z);
+
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.LEFT)
+            if (!getIsExtended(locData.plotLocX, locData.plotLocZ, locData.plotLocX + 1, locData.plotLocZ)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.RIGHT)
+            if (!getIsExtended(locData.plotLocX, locData.plotLocZ, locData.plotLocX - 1, locData.plotLocZ)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.TOP)
+            if (!getIsExtended(locData.plotLocX, locData.plotLocZ, locData.plotLocX, locData.plotLocZ + 1)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.BOTTOM)
+            if (!getIsExtended(locData.plotLocX, locData.plotLocZ, locData.plotLocX, locData.plotLocZ - 1)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.LEFT_TOP)
+            if (!getIsExtended4(locData.plotLocX, locData.plotLocZ, locData.plotLocX + 1, locData.plotLocZ + 1)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.RIGHT_TOP)
+            if (!getIsExtended4(locData.plotLocX, locData.plotLocZ, locData.plotLocX - 1, locData.plotLocZ + 1)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.LEFT_BOTTOM)
+            if (!getIsExtended4(locData.plotLocX, locData.plotLocZ, locData.plotLocX + 1, locData.plotLocZ - 1)) return null;
+        if (locData.extendSection == PlotLocData.EXTEND_SECTION.RIGHT_BOTTOM)
+            if (!getIsExtended4(locData.plotLocX, locData.plotLocZ, locData.plotLocX - 1, locData.plotLocZ - 1)) return null;
+
+            return getPlotDataEx(locData.plotLocX, locData.plotLocZ);
     }
 }
