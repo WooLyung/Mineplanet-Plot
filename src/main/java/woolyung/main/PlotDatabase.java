@@ -83,7 +83,7 @@ public class PlotDatabase
 
             // 플롯 병합4 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_extend4'").getInt(1) == 0)
-                statement.execute("CREATE TABLE plot_extend4 (plot1 TEXT, plot2 TEXT, plot3 TEXT, plot4 TEXT, FOREIGN KEY(plot1) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot2) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot3) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot4) REFERENCES plot(pos) ON DELETE CASCADE)");
+                statement.execute("CREATE TABLE plot_extend4 (plot1 TEXT, plot2 TEXT, FOREIGN KEY(plot1) REFERENCES plot(pos) ON DELETE CASCADE, FOREIGN KEY(plot2) REFERENCES plot(pos) ON DELETE CASCADE)");
         }
         catch (Exception e)
         {
@@ -279,6 +279,28 @@ public class PlotDatabase
         }
     }
 
+    public boolean getIsExtended4(int x1, int z1, int x2, int z2)
+    {
+        try {
+            String pos1 = x1 + ":" + z1;
+            String pos2 = x2 + ":" + z2;
+            String pos3 = x2 + ":" + z1;
+            String pos4 = x1 + ":" + z2;
+
+            if (statement.executeQuery("SELECT count(*) FROM plot_extend4 WHERE (plot1 = '" + pos1 + "' AND plot2 = '" + pos2 + "') OR (plot1 = '" + pos2 + "' AND plot2 = '" + pos1 + "')").getInt(1) == 0
+                    && statement.executeQuery("SELECT count(*) FROM plot_extend4 WHERE (plot1 = '" + pos3 + "' AND plot2 = '" + pos4 + "') OR (plot1 = '" + pos2 + "' AND plot2 = '" + pos1 + "')").getInt(1) == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void initPlayerdata(Player player)
     {
         try
@@ -356,6 +378,21 @@ public class PlotDatabase
             String pos2 = x2 + ":" + z2;
 
             statement.execute("INSERT INTO plot_extend2 VALUES ('" + pos1 + "', '" + pos2 + "')");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertExtend4(int x1, int z1, int x2, int z2)
+    {
+        try
+        {
+            String pos1 = x1 + ":" + z1;
+            String pos2 = x2 + ":" + z2;
+
+            statement.execute("INSERT INTO plot_extend4 VALUES ('" + pos1 + "', '" + pos2 + "')");
         }
         catch (Exception e)
         {

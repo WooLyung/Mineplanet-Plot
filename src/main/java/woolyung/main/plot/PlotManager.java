@@ -309,9 +309,43 @@ public class PlotManager
         return 0;
     }
 
-    public void mergePlot4(int x1, int z1, int x2, int z2)
+    public int mergePlot4(int x1, int z1, int x2, int z2)
     {
-        // 네 플롯 병합
+        PlotDataEx plotData1 = database.getPlotDataEx(x1, z1);
+        PlotDataEx plotData2 = database.getPlotDataEx(x1, z2);
+        PlotDataEx plotData3 = database.getPlotDataEx(x2, z1);
+        PlotDataEx plotData4 = database.getPlotDataEx(x2, z2);
+
+        if (plotData1 == null || plotData2 == null || plotData3 == null || plotData4 == null) return 1; // 주인이 없는 플롯
+        if (plotData1.owner.compareTo(plotData2.owner) != 0 || plotData1.owner.compareTo(plotData3.owner) != 0 || plotData1.owner.compareTo(plotData4.owner) != 0) return 2; // 주인이 다른 플롯
+        int distance = Math.abs(x1 - x2) * Math.abs(z1 - z2);
+        if (distance != 1) return 3; // 인접한 플롯이 아님
+        if (database.getIsExtended4(x1, z1, x2, z2)) return 4; // 이미 병합된 플롯
+        if (!database.getIsExtended(x1, z1, x1, z2) || !database.getIsExtended(x1, z1, x2, z1) || !database.getIsExtended(x2, z2, x1, z2) || !database.getIsExtended(x2, z2, x2, z1)) return 5; // 확장이 다 안된 플롯
+
+        // 스킨 제거
+        deleteSkin(x1, z1);
+
+        // 데이터 입력
+        database.insertExtend4(x1, z1, x2, z2);
+
+        int dirX = x2 - x1;
+        int dirZ = z2 - z1;
+        int centerX = x1 * 44 + dirX * 22, centerZ = z1 * 44 + dirZ * 22;
+
+        for (int x = centerX - 9; x <= centerX + 9; x++)
+        {
+            for (int z = centerZ - 9; z <= centerZ + 9; z++)
+            {
+                for (int y = plugin.getConfig().getInt("height") - 3; y < plugin.getConfig().getInt("height"); y++)
+                {
+                    world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
+                }
+                world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
+            }
+        }
+
+        return 0;
     }
 
     public void detachPlot2(int x1, int z1, int x2, int z2)

@@ -82,6 +82,10 @@ public class PlotCommand implements CommandExecutor
         else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.LEFT) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x + 1, z);
         else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.TOP) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x, z + 1);
         else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.BOTTOM) result = MineplanetPlot.instance.getPlotManager().mergePlot2(x, z, x, z - 1);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.LEFT_TOP) result = MineplanetPlot.instance.getPlotManager().mergePlot4(x, z, x + 1, z + 1);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.RIGHT_TOP) result = MineplanetPlot.instance.getPlotManager().mergePlot4(x, z, x - 1, z + 1);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.RIGHT_BOTTOM) result = MineplanetPlot.instance.getPlotManager().mergePlot4(x, z, x - 1, z - 1);
+        else if (plotLocData.extendSection == PlotLocData.EXTEND_SECTION.LEFT_BOTTOM) result = MineplanetPlot.instance.getPlotManager().mergePlot4(x, z, x + 1, z - 1);
         else
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.not_between")); // 플롯 사이가 아님
@@ -92,6 +96,7 @@ public class PlotCommand implements CommandExecutor
         else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.no_owner")); // 주인 없음
         else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.diff_owner")); // 주인 다름
         else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.already_merged")); // 이미 병합된 플롯
+        else if (result == 5) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.no_merged")); // 인접한 플롯이 모두 병합된 상태가 아님
     }
 
     private void arg_tp(CommandSender sender, Command command, String label, String[] args, Player player)
