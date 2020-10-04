@@ -48,9 +48,31 @@ public class PlotManager
         // 플롯 이사
     }
 
-    public void deletePlot(int x, int z)
+    public int deletePlot(int x, int z)
     {
-        // 플롯 삭제
+        PlotDataEx plotData = database.getPlotDataEx(x, z);
+
+        if (plotData == null) return 1; // 주인이 없는 플롯
+
+        detachPlot(x, z); // 플롯 병합 해제
+
+        // 데이터 삭제
+        database.deletePlot(x, z);
+
+        int centerX = x * 44, centerZ = z * 44;
+        for (int ix = centerX - 12; ix <= centerX + 12; ix++)
+        {
+            for (int iz = centerZ - 12; iz <= centerZ + 12; iz++)
+            {
+                for (int iy = 0; iy < 256; iy++)
+                {
+                    if (world.getWorld().getBlockAt(ix, iy, iz).getBlockData() != world.getDefaultWorldBlock(ix, iy, iz))
+                        world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
+                }
+            }
+        }
+
+        return 0;
     }
 
     public void deleteSkin(int x, int z)
@@ -455,7 +477,8 @@ public class PlotManager
                     {
                         for (int iy = 0; iy < 256; iy++)
                         {
-                            world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
+                            if (world.getWorld().getBlockAt(ix, iy, iz).getBlockData() != world.getDefaultWorldBlock(ix, iy, iz))
+                                world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
                         }
                     }
                 }
@@ -675,9 +698,14 @@ public class PlotManager
         return 0;
     }
 
-    public void changeSkin(int x, int z, int slot, int skin)
+    public void setSkinPlot(int x, int z, int slot, int skin)
     {
         // 스킨 설정
+    }
+
+    public void setSkinPlots()
+    {
+        // 스킨 한번에 설정
     }
 
     public void settingPlotInt(int x, int z, String setting, int value)

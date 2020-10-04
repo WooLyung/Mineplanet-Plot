@@ -64,6 +64,13 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("delete") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.delete"))
+                    arg_delete(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
@@ -126,6 +133,27 @@ public class PlotCommand implements CommandExecutor
         if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.success")); // 성공
         else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.no_owner")); // 주인 없음
         else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.not_merged")); // 병합 안된 플롯
+    }
+
+    private void arg_delete(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.delete.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().deletePlot(x, z);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.delete.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.delete.no_owner")); // 주인 없음
     }
 
     private void arg_tp(CommandSender sender, Command command, String label, String[] args, Player player)

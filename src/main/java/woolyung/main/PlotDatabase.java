@@ -137,6 +137,9 @@ public class PlotDatabase
             plotDataEx.blockClick = result2.getInt("block_click") == 1;
             plotDataEx.itemClear = result2.getInt("item_clear") == 1;
 
+            ArrayList<String> extendPlots = getPlotByExtendPlot(posX, posZ);
+            plotDataEx.plotSize = extendPlots.size();
+
             ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE pos = '" + plotDataEx.extend + "'");
             while (result.next())
             {
@@ -417,6 +420,21 @@ public class PlotDatabase
             String pos = x + ":" + z;
 
             statement.execute("DELETE FROM plot_data WHERE pos = '" + pos + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePlot(int x, int z)
+    {
+        try
+        {
+            deletePlotData(x, z);
+
+            String pos = x + ":" + z;
+            statement.execute("DELETE FROM plot WHERE pos = '" + pos + "'");
         }
         catch (Exception e)
         {
