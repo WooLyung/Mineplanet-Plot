@@ -72,7 +72,7 @@ public class PlotDatabase
 
             // 플롯 데이터 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_data'").getInt(1) == 0)
-                statement.execute("CREATE TABLE plot_data (pos TEXT PRIMARY KEY, skin1 INTEGER, skin2 INTEGER, skin3 INTEGER, biome TEXT, pvp INTEGER, click INTEGER, block_click INTEGER, item_clear INTEGER)");
+                statement.execute("CREATE TABLE plot_data (pos TEXT PRIMARY KEY, skin TEXT, biome TEXT, pvp INTEGER, click INTEGER, block_click INTEGER, item_clear INTEGER)");
 
             // 플롯 병합2 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_extend2'").getInt(1) == 0)
@@ -128,9 +128,7 @@ public class PlotDatabase
             plotDataEx.extend = plotData.extend;
 
             ResultSet result2 = statement.executeQuery("SELECT * FROM plot_data WHERE pos = '" + plotData.extend + "'");
-            plotDataEx.skin1 = result2.getInt("skin1");
-            plotDataEx.skin2 = result2.getInt("skin2");
-            plotDataEx.skin3 = result2.getInt("skin3");
+            plotDataEx.skin = result2.getString("skin");
             plotDataEx.biome = result2.getString("biome");
             plotDataEx.pvp = result2.getInt("pvp") == 1;
             plotDataEx.click = result2.getInt("click") == 1;
@@ -585,7 +583,7 @@ public class PlotDatabase
     {
         try
         {
-            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', " + data.skin1 + ", " + data.skin2 + ", " + data.skin3 + ", '" + data.biome + "', " + data.pvp + ", " + data.click + ", " + data.blockClick + ", " + data.itemClear + ")");
+            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', '" + data.skin + "', '" + data.biome + "', " + data.pvp + ", " + data.click + ", " + data.blockClick + ", " + data.itemClear + ")");
 
             insertPlayerPlotData(pos, data.owner, "owner");
             for (String player : data.helpers)
@@ -605,7 +603,7 @@ public class PlotDatabase
         {
             String pos = x + ":" + z;
 
-            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', 0, 0, 0, 'PLAINS', 0, 1, 0, 1)");
+            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', 'default', 'plains', 0, 1, 0, 1)");
             statement.execute("INSERT INTO plot VALUES ('" + pos + "', '" + pos + "')");
         }
         catch (Exception e)
@@ -675,5 +673,20 @@ public class PlotDatabase
             if (!getIsExtended4(locData.plotLocX, locData.plotLocZ, locData.plotLocX - 1, locData.plotLocZ - 1)) return null;
 
             return getPlotDataEx(locData.plotLocX, locData.plotLocZ);
+    }
+
+    public void setSkinData(int x, int z, String skin)
+    {
+        try
+        {
+            PlotData plotData = getPlotData(x, z);
+            if (plotData == null) return;
+
+            statement.execute("UPDATE plot_data SET skin = '" + skin + "' WHERE pos = '" + plotData.extend + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

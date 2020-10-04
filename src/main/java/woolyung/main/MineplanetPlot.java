@@ -5,8 +5,10 @@ import woolyung.main.Events.BlockBreakEventListener;
 import woolyung.main.Events.BlockPlaceEventListener;
 import woolyung.main.Events.PlayerJoinEventListener;
 import woolyung.main.commands.PlotCommand;
+import woolyung.main.plot.Data.SkinData;
 import woolyung.main.plot.PlotManager;
 import woolyung.main.plot.PlotWorld;
+import woolyung.main.plot.SkinManager;
 
 import java.io.File;
 
@@ -14,7 +16,9 @@ public final class MineplanetPlot extends JavaPlugin
 {
     private PlotWorld plotWorld;
     private PlotManager plotManager;
+    private SkinManager skinManager;
     private PlotDatabase plotDatabase;
+    private SkinDatabase skinDatabase;
 
     public static MineplanetPlot instance;
 
@@ -26,9 +30,13 @@ public final class MineplanetPlot extends JavaPlugin
     @Override
     public void onEnable()
     {
+        if (createPluginDirectory());
+        {
+            createDataDirectory();
+            createSkinDirectory();
+        }
+
         createConfig();
-        createPluginDirectory();
-        createDataDirectory();
 
         init();
     }
@@ -36,6 +44,14 @@ public final class MineplanetPlot extends JavaPlugin
     @Override
     public void onDisable()
     {
+    }
+
+    public SkinDatabase getSkinDatabase() {
+        return skinDatabase;
+    }
+
+    public SkinManager getSkinManager() {
+        return skinManager;
     }
 
     public PlotManager getPlotManager() { return plotManager; }
@@ -54,7 +70,9 @@ public final class MineplanetPlot extends JavaPlugin
     {
         plotWorld = new PlotWorld(getConfig().getString("world"));
         plotDatabase = new PlotDatabase();
+        skinDatabase = new SkinDatabase();
         plotManager = new PlotManager(this, plotDatabase, plotWorld);
+        skinManager = new SkinManager(this, skinDatabase, plotWorld);
 
         getCommand("plot").setExecutor(new PlotCommand());
 
@@ -116,6 +134,34 @@ public final class MineplanetPlot extends JavaPlugin
             {
                 e.printStackTrace();
                 getLogger().info("데이터 폴더 생성에 실패했습니다. 플러그인을 비활성화합니다.");
+                getPluginLoader().disablePlugin(this);
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private boolean createSkinDirectory()
+    {
+        File folder = new File(getDataFolder().getPath() + "/skins");
+
+        if (!folder.exists())
+        {
+            getLogger().info("스킨 폴더가 존재하지 않습니다. 생성을 시도합니다.");
+
+            try
+            {
+                folder.mkdir();
+                getLogger().info("스킨 폴더 생성을 성공했습니다.");
+                return true;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                getLogger().info("스킨 폴더 생성에 실패했습니다. 플러그인을 비활성화합니다.");
                 getPluginLoader().disablePlugin(this);
                 return false;
             }

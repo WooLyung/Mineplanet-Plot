@@ -749,14 +749,21 @@ public class PlotManager
         return 0;
     }
 
-    public void setSkinPlot(int x, int z, int slot, int skin)
+    public int setSkinPlot(int x, int z, String skin)
     {
-        // 스킨 설정
-    }
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+        int result = MineplanetPlot.instance.getSkinManager().setSkinData(x, z, skin);
 
-    public void setSkinPlots()
-    {
-        // 스킨 한번에 설정
+        if (result == 1) return 2;
+
+        for (String plot : database.getPlotByExtendPlot(plotDataEx.extend))
+        {
+            String[] coord = plot.split(":");
+            MineplanetPlot.instance.getSkinManager().updateSkin(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+        }
+
+        return 0;
     }
 
     public void settingPlotInt(int x, int z, String setting, int value)

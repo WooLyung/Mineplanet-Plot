@@ -93,16 +93,51 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("setskin") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.setskin"))
+                    arg_setskin(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
+    }
+
+    private void arg_setskin(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        if (args.length < 2)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_arg")); // 스킨 이름 입력하셈
+            return;
+        }
+
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().setSkinPlot(x, z, args[1]);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_owner")); // 주인이 없는 플롯
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_data")); // 데이터가 없는 스킨
     }
 
     private void arg_give(CommandSender sender, Command command, String label, String[] args, Player player)
     {
         if (args.length < 2)
         {
-            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.no_arg")); // 최대 개수 입력하셈
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.no_arg")); // 플레이어 닉네임 입력하셈
             return;
         }
 

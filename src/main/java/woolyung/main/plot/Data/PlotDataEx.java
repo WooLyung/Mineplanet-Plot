@@ -10,9 +10,7 @@ public class PlotDataEx extends PlotData
     public int plotSize;
 
     // 설정들
-    public int skin1;
-    public int skin2;
-    public int skin3;
+    public String skin;
     public String biome;
     public boolean pvp;
     public boolean click;

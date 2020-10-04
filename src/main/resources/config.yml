@@ -63,3 +63,9 @@ message:
     no_player_data: "데이터가 존재하지 않는 플레이어임"
     error: "명령어 에러"
     success: "최대 개수 설정 성공"
+  setskin:
+    no_arg: "스킨 이름 입력"
+    not_plot_world: "플롯 월드가 아님"
+    no_owner: "주인 없는 플롯"
+    no_data: "알 수 없는 스킨"
+    success: "스킨 설정 성공"
