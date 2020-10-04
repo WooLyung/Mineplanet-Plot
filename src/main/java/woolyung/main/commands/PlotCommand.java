@@ -126,7 +126,7 @@ public class PlotCommand implements CommandExecutor
             return;
         }
 
-        int result = MineplanetPlot.instance.getPlotManager().setSkinPlot(x, z, args[1]);
+        int result = MineplanetPlot.instance.getPlotManager().setSkinPlots(x, z, args[1]);
 
         if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.success")); // 성공
         else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_owner")); // 주인이 없는 플롯

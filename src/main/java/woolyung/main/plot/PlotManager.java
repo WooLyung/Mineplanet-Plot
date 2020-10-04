@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.PlotDatabase;
 import woolyung.main.plot.Data.PlayerData;
+import woolyung.main.plot.Data.PlotData;
 import woolyung.main.plot.Data.PlotDataEx;
 
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public class PlotManager
 
     public void deleteSkin(int x, int z)
     {
-        // 스킨 제거
+        MineplanetPlot.instance.getSkinManager().setSkinData(x, z, "default");
     }
 
     public int mergePlot2(int x1, int z1, int x2, int z2) // 두 플롯 병합
@@ -141,10 +142,6 @@ public class PlotManager
         int distance = Math.abs(x1 - x2) + Math.abs(z1 - z2);
         if (distance != 1) return 3; // 인접한 플롯이 아님
         if (database.getIsExtended(x1, z1, x2, z2)) return 4; // 이미 병합된 플롯
-
-        // 스킨 제거
-        deleteSkin(x1, z1);
-        deleteSkin(x2, z2);
 
         if (plotData1.extend.compareTo(plotData2.extend) == 0) // 확장 기준 플롯이 같을 경우
         {
@@ -195,18 +192,11 @@ public class PlotManager
             database.deletePlotData(deletePlotX, deletePlotZ); // 필요가 없어진 플롯 데이터 삭제
         }
 
+        deleteSkin(x1, z1);
+
         // 블럭 채우기
         int centerX = x1 * 44;
         int centerZ = z1 * 44;
-
-        BlockData west = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-        ((Directional)west).setFacing(BlockFace.WEST);
-        BlockData east = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-        ((Directional)east).setFacing(BlockFace.EAST);
-        BlockData north = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-        ((Directional)north).setFacing(BlockFace.NORTH);
-        BlockData south = Bukkit.createBlockData(Material.BIRCH_STAIRS);
-        ((Directional)south).setFacing(BlockFace.SOUTH);
 
         if (z1 > z2) // 아래
         {
@@ -214,41 +204,10 @@ public class PlotManager
             {
                 for (int x = centerX - 12; x <= centerX + 12; x++)
                 {
-                    for (int y = plugin.getConfig().getInt("height") - 3; y <= plugin.getConfig().getInt("height") - 1; y++)
-                    {
+                    for (int y = plugin.getConfig().getInt("height") - 3; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
-                }
-
-                if (z != centerZ - 13 && z != centerZ - 31)
-                {
-                    world.getWorld().getBlockAt(centerX - 13, plugin.getConfig().getInt("height"), z).setBlockData(east);
-                    world.getWorld().getBlockAt(centerX + 13, plugin.getConfig().getInt("height"), z).setBlockData(west);
-                    world.getWorld().getBlockAt(centerX - 13, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                    world.getWorld().getBlockAt(centerX + 13, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-
-                    if (z >= centerZ - 24 && z <= centerZ - 20)
-                    {
-                        world.getWorld().getBlockAt(centerX - 19, plugin.getConfig().getInt("height"), z).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(centerX + 19, plugin.getConfig().getInt("height"), z).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(centerX - 19, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                        world.getWorld().getBlockAt(centerX + 19, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                    }
-                }
-            }
-            for (int z = centerZ - 14; z >= centerZ - 30; z--)
-            {
-                for (int x = centerX - 18; x <= centerX - 14; x++)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
-                }
-
-                for (int x = centerX + 18; x >= centerX + 14; x--)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
                 }
             }
         }
@@ -264,35 +223,6 @@ public class PlotManager
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
                 }
-
-                if (z != centerZ + 13 && z != centerZ + 31)
-                {
-                    world.getWorld().getBlockAt(centerX - 13, plugin.getConfig().getInt("height"), z).setBlockData(east);
-                    world.getWorld().getBlockAt(centerX + 13, plugin.getConfig().getInt("height"), z).setBlockData(west);
-                    world.getWorld().getBlockAt(centerX - 13, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                    world.getWorld().getBlockAt(centerX + 13, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                    if (z <= centerZ + 24 && z >= centerZ + 20)
-                    {
-                        world.getWorld().getBlockAt(centerX - 19, plugin.getConfig().getInt("height"), z).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(centerX + 19, plugin.getConfig().getInt("height"), z).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(centerX - 19, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                        world.getWorld().getBlockAt(centerX + 19, plugin.getConfig().getInt("height") - 1, z).setType(Material.DIRT);
-                    }
-                }
-            }
-            for (int z = centerZ + 14; z <= centerZ + 30; z++)
-            {
-                for (int x = centerX - 18; x <= centerX - 14; x++)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
-                }
-
-                for (int x = centerX + 18; x >= centerX + 14; x--)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
-                }
             }
         }
         else if (x1 > x2) // 오른쪽
@@ -306,35 +236,6 @@ public class PlotManager
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
-                }
-
-                if (x != centerX - 13 && x != centerX - 31)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ - 13).setBlockData(south);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ + 13).setBlockData(north);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ - 13).setType(Material.DIRT);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ + 13).setType(Material.DIRT);
-                    if (x >= centerX - 24 && x <= centerX - 20)
-                    {
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ - 19).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ + 19).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ - 19).setType(Material.DIRT);
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ + 19).setType(Material.DIRT);
-                    }
-                }
-            }
-            for (int x = centerX - 14; x >= centerX - 30; x--)
-            {
-                for (int z = centerZ - 18; z <= centerZ - 14; z++)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
-                }
-
-                for (int z = centerZ + 18; z >= centerZ + 14; z--)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
                 }
             }
         }
@@ -350,37 +251,10 @@ public class PlotManager
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
                 }
-
-                if (x != centerX + 13 && x != centerX + 31)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ - 13).setBlockData(south);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ + 13).setBlockData(north);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ - 13).setType(Material.DIRT);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ + 13).setType(Material.DIRT);
-                    if (x <= centerX + 24 && x >= centerX + 20)
-                    {
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ - 19).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), centerZ + 19).setType(Material.BIRCH_SLAB);
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ - 19).setType(Material.DIRT);
-                        world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, centerZ + 19).setType(Material.DIRT);
-                    }
-                }
-            }
-            for (int x = centerX + 14; x <= centerX + 30; x++)
-            {
-                for (int z = centerZ - 18; z <= centerZ - 14; z++)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
-                }
-
-                for (int z = centerZ + 18; z >= centerZ + 14; z--)
-                {
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.AIR);
-                    world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height") - 1, z).setType(Material.COARSE_DIRT);
-                }
             }
         }
+
+        setSkinPlots(x1, z1);
 
         return 0;
     }
@@ -420,6 +294,8 @@ public class PlotManager
                 world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
             }
         }
+
+        setSkinPlots(x1, z1);
 
         return 0;
     }
@@ -534,222 +410,22 @@ public class PlotManager
                     }
                 }
             }
-
-            // 블럭 추가
-            if (database.getIsExtended(x + 1, z + 1, x + 1, z)) // 왼쪽 위 - 왼쪽
-            {
-                // 반블럭
-                for (int iz = centerZ + 14; iz <= centerZ + 25; iz++)
-                {
-                    world.getWorld().getBlockAt(centerX + 25, plugin.getConfig().getInt("height"), iz).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(centerX + 25, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int ix = centerX + 26; ix <= centerX + 30; ix++)
-                {
-                    for (int iz = centerZ + 14; iz <= centerZ + 30; iz++)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int iz = centerZ + 14; iz <= centerZ + 30; iz++)
-                {
-                    world.getWorld().getBlockAt(centerX + 31, plugin.getConfig().getInt("height"), iz).setBlockData(east);
-                    world.getWorld().getBlockAt(centerX + 31, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x + 1, z - 1, x + 1, z)) // 왼쪽 아래 - 왼쪽
-            {
-                // 반블럭
-                for (int iz = centerZ - 14; iz >= centerZ - 25; iz--)
-                {
-                    world.getWorld().getBlockAt(centerX + 25, plugin.getConfig().getInt("height"), iz).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(centerX + 25, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int ix = centerX + 26; ix <= centerX + 30; ix++)
-                {
-                    for (int iz = centerZ - 14; iz >= centerZ - 30; iz--)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int iz = centerZ - 14; iz >= centerZ - 30; iz--)
-                {
-                    world.getWorld().getBlockAt(centerX + 31, plugin.getConfig().getInt("height"), iz).setBlockData(east);
-                    world.getWorld().getBlockAt(centerX + 31, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x - 1, z + 1, x - 1, z)) // 오른쪽 위 - 오른쪽
-            {
-                // 반블럭
-                for (int iz = centerZ + 14; iz <= centerZ + 25; iz++)
-                {
-                    world.getWorld().getBlockAt(centerX - 25, plugin.getConfig().getInt("height"), iz).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(centerX - 25, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int ix = centerX - 26; ix >= centerX - 30; ix--)
-                {
-                    for (int iz = centerZ + 14; iz <= centerZ + 30; iz++)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int iz = centerZ + 14; iz <= centerZ + 30; iz++)
-                {
-                    world.getWorld().getBlockAt(centerX - 31, plugin.getConfig().getInt("height"), iz).setBlockData(west);
-                    world.getWorld().getBlockAt(centerX - 31, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x - 1, z - 1, x - 1, z)) // 오른쪽 아래 - 오른쪽
-            {
-                // 반블럭
-                for (int iz = centerZ - 14; iz >= centerZ - 25; iz--)
-                {
-                    world.getWorld().getBlockAt(centerX - 25, plugin.getConfig().getInt("height"), iz).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(centerX - 25, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int ix = centerX - 26; ix >= centerX - 30; ix--)
-                {
-                    for (int iz = centerZ - 14; iz >= centerZ - 30; iz--)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int iz = centerZ - 14; iz >= centerZ - 30; iz--)
-                {
-                    world.getWorld().getBlockAt(centerX - 31, plugin.getConfig().getInt("height"), iz).setBlockData(west);
-                    world.getWorld().getBlockAt(centerX - 31, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x + 1, z + 1, x, z + 1)) // 왼쪽 위 - 위
-            {
-                // 반블럭
-                for (int ix = centerX + 14; ix <= centerX + 25; ix++)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ + 25).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ + 25).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int iz = centerZ + 26; iz <= centerZ + 30; iz++)
-                {
-                    for (int ix = centerX + 14; ix <= centerX + 30; ix++)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int ix = centerX + 14; ix <= centerX + 30; ix++)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ + 31).setBlockData(south);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ + 31).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x - 1, z + 1, x, z + 1)) // 오른쪽 위 - 위
-            {
-                // 반블럭
-                for (int ix = centerX - 14; ix >= centerX - 25; ix--)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ + 25).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ + 25).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int iz = centerZ + 26; iz <= centerZ + 30; iz++)
-                {
-                    for (int ix = centerX - 14; ix >= centerX - 30; ix--)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int ix = centerX - 14; ix >= centerX - 30; ix--)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ + 31).setBlockData(south);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ + 31).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x + 1, z - 1, x, z - 1)) // 왼쪽 아래 - 아래
-            {
-                // 반블럭
-                for (int ix = centerX + 14; ix <= centerX + 25; ix++)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ - 25).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ - 25).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int iz = centerZ - 26; iz >= centerZ - 30; iz--)
-                {
-                    for (int ix = centerX + 14; ix <= centerX + 30; ix++)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int ix = centerX + 14; ix <= centerX + 30; ix++)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ - 31).setBlockData(north);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ - 31).setType(Material.COARSE_DIRT);
-                }
-            }
-            if (database.getIsExtended(x - 1, z + 1, x, z + 1)) // 오른쪽 아래 - 아래
-            {
-                // 반블럭
-                for (int ix = centerX - 14; ix >= centerX - 25; ix--)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ - 25).setType(Material.BIRCH_SLAB);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ - 25).setType(Material.COARSE_DIRT);
-                }
-
-                // 공기
-                for (int iz = centerZ - 26; iz >= centerZ - 30; iz--)
-                {
-                    for (int ix = centerX - 14; ix >= centerX - 30; ix--)
-                    {
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), iz).setType(Material.AIR);
-                        world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, iz).setType(Material.COARSE_DIRT);
-                    }
-                }
-
-                // 계단
-                for (int ix = centerX - 14; ix >= centerX - 30; ix--)
-                {
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height"), centerZ - 31).setBlockData(north);
-                    world.getWorld().getBlockAt(ix, plugin.getConfig().getInt("height") - 1, centerZ - 31).setType(Material.COARSE_DIRT);
-                }
-            }
         }
+
+        setSkinPlots(x, z);
+        setSkinPlots(x + 1, z);
+        setSkinPlots(x, z + 1);
+        setSkinPlots(x, z - 1);
+        setSkinPlots(x - 1, z);
+        setSkinPlots(x + 1, z + 1);
+        setSkinPlots(x + 1, z - 1);
+        setSkinPlots(x - 1, z - 1);
+        setSkinPlots(x - 1, z + 1);
 
         return 0;
     }
 
-    public int setSkinPlot(int x, int z, String skin)
+    public int setSkinPlots(int x, int z, String skin)
     {
         PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
         if (plotDataEx == null) return 1;
@@ -762,6 +438,30 @@ public class PlotManager
             String[] coord = plot.split(":");
             MineplanetPlot.instance.getSkinManager().updateSkin(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
         }
+
+        return 0;
+    }
+
+    public int setSkinPlots(int x, int z)
+    {
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+
+        for (String plot : database.getPlotByExtendPlot(plotDataEx.extend))
+        {
+            String[] coord = plot.split(":");
+            MineplanetPlot.instance.getSkinManager().updateSkin(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+        }
+
+        return 0;
+    }
+
+    public int setSkinPlot(int x, int z)
+    {
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+
+        MineplanetPlot.instance.getSkinManager().updateSkin(x, z);
 
         return 0;
     }
