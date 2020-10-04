@@ -71,9 +71,64 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("move") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.move"))
+                    arg_move(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
+    }
+
+    private void arg_move(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int toX = 0, toZ = 0;
+
+        if (args.length < 3)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.tp.no_arg")); // 좌표 입력하셈
+            return;
+        }
+
+        try
+        {
+            toX = Integer.parseInt(args[1]);
+            toZ = Integer.parseInt(args[2]);
+        }
+        catch (Exception e)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.error")); // 명령어 에러
+            return;
+        }
+
+        int radius = MineplanetPlot.instance.getConfig().getInt("radius");
+        if (toX >= radius || toX <= -radius || toZ >= radius || toZ <= -radius)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.over_radius")); // 범위 넘음
+            return;
+        }
+
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().movePlot(x, z, toX, toZ);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.no_owner")); // 주인 없음
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.exist_owner")); // 이동 위치에 주인이 있음
     }
 
     private void arg_merge(CommandSender sender, Command command, String label, String[] args, Player player)

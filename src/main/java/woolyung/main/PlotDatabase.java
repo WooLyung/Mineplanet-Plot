@@ -569,6 +569,20 @@ public class PlotDatabase
         }
     }
 
+    public void insertPlot(int x, int z)
+    {
+        try
+        {
+            String pos = x + ":" + z;
+
+            statement.execute("INSERT INTO plot VALUES ('" + pos + "', '" + pos + "')");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void insertPlayerPlotData(String pos, String uuid, String authority)
     {
         try

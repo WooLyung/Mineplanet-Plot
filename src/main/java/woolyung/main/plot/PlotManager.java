@@ -1,7 +1,6 @@
 package woolyung.main.plot;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -43,9 +42,36 @@ public class PlotManager
         // 플롯 초기화
     }
 
-    public void movePlot(int fromX, int fromZ, int toX, int toZ)
+    public int movePlot(int fromX, int fromZ, int toX, int toZ)
     {
-        // 플롯 이사
+        PlotDataEx plotDataFrom = database.getPlotDataEx(fromX, fromZ);
+        PlotDataEx plotDataTo = database.getPlotDataEx(toX, toZ);
+
+        if (plotDataFrom == null) return 1; // 주인이 없는 플롯
+        if (plotDataTo != null) return 2; // 이동 위치에 플롯이 있음
+
+        // 데이터 생성
+        database.insertPlotData(toX + ":" + toZ, plotDataFrom);
+        database.insertPlot(toX, toZ);
+
+        // 블럭 옮김
+        int centerFromX = fromX * 44, centerFromZ = fromZ * 44;
+        int centerToX = toX * 44, centerToZ = toZ * 44;
+        for (int ix = -12; ix <= 12; ix++)
+        {
+            for (int iz = -12; iz <= 12; iz++)
+            {
+                for (int iy = 0; iy < 256; iy++)
+                {
+                    world.getWorld().getBlockAt(ix + centerToX, iy, iz + centerToZ).setBlockData(world.getWorld().getBlockAt(ix + centerFromX, iy, iz + centerFromZ).getBlockData());
+                }
+            }
+        }
+
+        // 데이터 삭제
+        deletePlot(fromX, fromZ);
+
+        return 0;
     }
 
     public int deletePlot(int x, int z)

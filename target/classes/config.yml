@@ -42,3 +42,11 @@ message:
     not_plot_world: "플롯 월드가 아님"
     no_owner: "주인이 없는 플롯"
     success: "삭제 성공"
+  move:
+    no_arg: "좌표 입력하셈"
+    not_plot_world: "플롯 월드가 아님"
+    error: "명령어 에러"
+    exist_owner: "이동 위치에 주인이 있음"
+    over_radius: "범위 넘음"
+    no_owner: "주인이 없는 플롯"
+    success: "삭제 성공"
