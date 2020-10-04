@@ -213,6 +213,31 @@ public class PlotDatabase
         return null;
     }
 
+    public PlayerData getPlayerDataByName(String name)
+    {
+        try
+        {
+            if (statement.executeQuery("SELECT count(*) FROM player WHERE name = '" + name +"'").getInt(1) == 0)
+                return null;
+            ResultSet result = statement.executeQuery("SELECT * FROM player WHERE name = '" + name + "'");
+            String uuid = result.getString("uuid");
+            int maxPlot = result.getInt("max_plot");
+
+            PlayerData data = new PlayerData();
+            data.uuid = uuid;
+            data.maxPlot = maxPlot;
+            data.name = name;
+
+            return data;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public PlayerDataEx getPlayerDataEx(Player player)
     {
         PlayerData playerData = getPlayerData(player);
@@ -370,6 +395,26 @@ public class PlotDatabase
         {
             e.printStackTrace();
         }
+    }
+
+    public int setMaxPlot(String name, int max)
+    {
+        PlayerData data = getPlayerDataByName(name);
+        if (data == null) return 2;
+
+        try
+        {
+            if (statement.executeQuery("SELECT count(*) FROM player WHERE uuid = '" + data.uuid +"'").getInt(1) == 0)
+                return 2;
+            statement.execute("UPDATE player SET max_plot = '" + max + "' WHERE uuid = '" + data.uuid + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return 1;
+        }
+
+        return 0;
     }
 
     public ArrayList<String> getPlotByExtendPlot(String pos)
@@ -608,7 +653,7 @@ public class PlotDatabase
         }
     }
 
-    public PlotDataEx getPlotInnerData(int x, int z)
+   public PlotDataEx getPlotInnerData(int x, int z)
     {
         PlotLocData locData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(x, z);
 

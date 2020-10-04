@@ -8,6 +8,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.PlotDatabase;
+import woolyung.main.plot.Data.PlayerData;
 import woolyung.main.plot.Data.PlotDataEx;
 
 import java.util.ArrayList;
@@ -34,6 +35,17 @@ public class PlotManager
 
         MineplanetPlot.instance.getPlotDatabase().insertPlotData(x, z);
         MineplanetPlot.instance.getPlotDatabase().insertPlayerPlotData(x, z, player.getUniqueId().toString(), "owner");
+        return 0;
+    }
+
+    public int buyPlot(String uuid, int x, int z) // 플롯 구매
+    {
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+
+        if (plotDataEx != null) return 1; // 주인이 있는 플롯
+
+        MineplanetPlot.instance.getPlotDatabase().insertPlotData(x, z);
+        MineplanetPlot.instance.getPlotDatabase().insertPlayerPlotData(x, z, uuid, "owner");
         return 0;
     }
 
@@ -70,6 +82,19 @@ public class PlotManager
 
         // 데이터 삭제
         deletePlot(fromX, fromZ);
+
+        return 0;
+    }
+
+    public int givePlot(String name, int x, int z)
+    {
+        PlayerData data = database.getPlayerDataByName(name);
+        if (data == null) return 1;
+
+        PlotDataEx plotData = database.getPlotDataEx(x, z);
+
+        if (plotData != null) return 2; // 주인이 있는 플롯
+        buyPlot(data.uuid, x, z);
 
         return 0;
     }

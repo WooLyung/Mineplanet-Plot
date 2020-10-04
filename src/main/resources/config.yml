@@ -50,3 +50,16 @@ message:
     over_radius: "범위 넘음"
     no_owner: "주인이 없는 플롯"
     success: "이동 성공"
+  give:
+    no_arg: "argument 부족함"
+    not_plot_world: "플롯 월드가 아님"
+    exist_plot_owner: "주인이 있는 플롯임"
+    over_radius: "범위 넘음"
+    no_player_data: "데이터가 존재하지 않는 플레이어임"
+    success: "지급 성공"
+  maxplot:
+    no_arg: "argument 부족함"
+    arg_error: "argument 에러!"
+    no_player_data: "데이터가 존재하지 않는 플레이어임"
+    error: "명령어 에러"
+    success: "최대 개수 설정 성공"

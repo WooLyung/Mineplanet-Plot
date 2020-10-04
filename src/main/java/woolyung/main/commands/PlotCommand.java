@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import woolyung.main.MineplanetPlot;
+import woolyung.main.plot.Data.PlayerData;
 import woolyung.main.plot.Data.PlayerDataEx;
 import woolyung.main.plot.Data.PlotDataEx;
 import woolyung.main.plot.Data.PlotLocData;
@@ -78,9 +79,84 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("give") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.give"))
+                    arg_give(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
+            else if (args[0].compareTo("maxplot") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.maxplot"))
+                    arg_maxplot(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
+    }
+
+    private void arg_give(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        if (args.length < 2)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.no_arg")); // 최대 개수 입력하셈
+            return;
+        }
+
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int radius = MineplanetPlot.instance.getConfig().getInt("radius");
+        if (x >= radius || x <= -radius || z >= radius || z <= -radius)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.over_radius")); // 범위 넘음
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().givePlot(args[1], x, z);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.no_player_data")); // 데이터가 존재하지 않음
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.exist_plot_owner")); // 주인이 있는 플롯임
+    }
+
+    private void arg_maxplot(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        if (args.length < 3)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.maxplot.no_arg")); // 최대 개수 입력하셈
+            return;
+        }
+
+        int max = 0;
+        try
+        {
+            max = Integer.parseInt(args[2]);
+        }
+        catch (Exception e)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.maxplot.arg_error")); // 명령어 에러
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotDatabase().setMaxPlot(args[1], max);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.maxplot.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.maxplot.error")); // 에러 발생
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.maxplot.no_player_data")); // 데이터가 존재하지 않음
     }
 
     private void arg_move(CommandSender sender, Command command, String label, String[] args, Player player)
