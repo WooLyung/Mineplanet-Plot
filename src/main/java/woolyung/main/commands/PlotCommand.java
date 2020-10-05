@@ -115,6 +115,17 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("clear") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.clear"))
+                    arg_clear(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
+            else
+            {
+                player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.wrong_command"));
+            }
         }
 
         return true;
@@ -137,14 +148,36 @@ public class PlotCommand implements CommandExecutor
     private void arg_op(CommandSender sender, Command command, String label, String[] args, Player player)
     {
         player.sendMessage("§a[Plot] ───────────────────────");
-        player.sendMessage("§a · §7/plot merge §f: 플롯을 병합합니다 §c[OP]");
-        player.sendMessage("§a · §7/plot detach §f: 플롯의 모든 병합을 해제합니다 §c[OP]");
-        player.sendMessage("§a · §7/plot delete §f: 플롯을 삭제합니다 §c[OP]");
-        player.sendMessage("§a · §7/plot move <x> <z> §f: 플롯을 이동시킵니다 §c[OP]");
-        player.sendMessage("§a · §7/plot give <p> §f: 플롯을 지급합니다 §c[OP]");
-        player.sendMessage("§a · §7/plot maxplot <p> <n> §f: 최대 플롯을 설정합니다 §c[OP]");
-        player.sendMessage("§a · §7/plot setskin <s> §f: 플롯 스킨을 설정합니다 §c[OP]");
-        player.sendMessage("§a · §7/plot clear §f: 플롯을 초기화합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot merge §f: 플롯을 병합합니다");
+        player.sendMessage("§a · §7/plot detach §f: 플롯의 모든 병합을 해제합니다]");
+        player.sendMessage("§a · §7/plot delete §f: 플롯을 삭제합니다");
+        player.sendMessage("§a · §7/plot move <x> <z> §f: 플롯을 이동시킵니다");
+        player.sendMessage("§a · §7/plot give <p> §f: 플롯을 지급합니다");
+        player.sendMessage("§a · §7/plot maxplot <p> <n> §f: 최대 플롯을 설정합니다");
+        player.sendMessage("§a · §7/plot setskin <s> §f: 플롯 스킨을 설정합니다");
+        player.sendMessage("§a · §7/plot setbiome <b> §f: 바이옴을 설정합니다");
+        player.sendMessage("§a · §7/plot clear §f: 플롯을 초기화합니다");
+    }
+
+    private void arg_clear(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.clear.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().clearPlots(x, z);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.clear.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.clear.no_owner")); // 주인이 없는 플롯
     }
 
     private void arg_setskin(CommandSender sender, Command command, String label, String[] args, Player player)

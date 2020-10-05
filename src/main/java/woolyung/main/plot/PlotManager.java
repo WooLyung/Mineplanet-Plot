@@ -49,9 +49,99 @@ public class PlotManager
         return 0;
     }
 
+    public int clearPlots(int x, int z)
+    {
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+
+        for (String plot : database.getPlotByExtendPlot(plotDataEx.extend))
+        {
+            String[] coord = plot.split(":");
+            clearPlot(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+        }
+
+        return 0;
+    }
+
     public void clearPlot(int x, int z)
     {
-        // 플롯 초기화
+        int centerX = x * 44, centerZ = z * 44;
+        for (int ix = -12; ix <= 12; ix++)
+        {
+            for (int iz = -12; iz <= 12; iz++)
+            {
+                for (int iy = 0; iy < 256; iy++)
+                {
+                    Material mat;
+                    if (iy == 0) mat = Material.BEDROCK;
+                    else if (iy < world.getHeight()) mat = Material.DIRT;
+                    else if (iy == world.getHeight()) mat = Material.GRASS_BLOCK;
+                    else mat = Material.AIR;
+
+                    world.getWorld().getBlockAt(ix + centerX, iy, iz + centerZ).setType(mat);
+                }
+            }
+        }
+
+        if (database.getIsExtended(x, z, x + 1, z))
+        {
+            for (int ix = 13; ix <= 31; ix++)
+            {
+                for (int iz = -12; iz <= 12; iz++)
+                {
+                    for (int iy = 0; iy < 256; iy++)
+                    {
+                        Material mat;
+                        if (iy == 0) mat = Material.BEDROCK;
+                        else if (iy < world.getHeight()) mat = Material.DIRT;
+                        else if (iy == world.getHeight()) mat = Material.GRASS_BLOCK;
+                        else mat = Material.AIR;
+
+                        world.getWorld().getBlockAt(ix + centerX, iy, iz + centerZ).setType(mat);
+                    }
+                }
+            }
+        }
+
+        if (database.getIsExtended(x, z, x, z + 1))
+        {
+            for (int ix = -12; ix <= 12; ix++)
+            {
+                for (int iz = 13; iz <= 31; iz++)
+                {
+                    for (int iy = 0; iy < 256; iy++)
+                    {
+                        Material mat;
+                        if (iy == 0) mat = Material.BEDROCK;
+                        else if (iy < world.getHeight()) mat = Material.DIRT;
+                        else if (iy == world.getHeight()) mat = Material.GRASS_BLOCK;
+                        else mat = Material.AIR;
+
+                        world.getWorld().getBlockAt(ix + centerX, iy, iz + centerZ).setType(mat);
+                    }
+                }
+            }
+        }
+
+        if (database.getIsExtended4(x, z, x + 1, z + 1))
+        {
+            for (int ix = 13; ix <= 31; ix++)
+            {
+                for (int iz = 13; iz <= 31; iz++)
+                {
+                    for (int iy = 0; iy < 256; iy++)
+                    {
+                        Material mat;
+                        if (iy == 0) mat = Material.BEDROCK;
+                        else if (iy < world.getHeight()) mat = Material.DIRT;
+                        else if (iy == world.getHeight()) mat = Material.GRASS_BLOCK;
+                        else mat = Material.AIR;
+
+                        world.getWorld().getBlockAt(ix + centerX, iy, iz + centerZ).setType(mat);
+                    }
+                }
+            }
+        }
     }
 
     public int movePlot(int fromX, int fromZ, int toX, int toZ)
