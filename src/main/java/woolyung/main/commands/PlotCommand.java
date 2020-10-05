@@ -25,11 +25,11 @@ public class PlotCommand implements CommandExecutor
 
             if (args.length == 0)
             {
-
+                player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_arg"));
             }
             else if (args[0].compareTo("help") == 0 || args[0].compareTo("?") == 0)
             {
-                player.sendMessage("플롯 명령어 도움말");
+                arg_help(sender, command, label, args, player);
             }
             else if (args[0].compareTo("info") == 0)
             {
@@ -50,6 +50,14 @@ public class PlotCommand implements CommandExecutor
             else if (args[0].compareTo("tp") == 0)
             {
                 arg_tp(sender, command, label, args, player);
+            }
+            else if (args[0].compareTo("helper") == 0)
+            {
+                arg_helper(sender, command, label, args, player);
+            }
+            else if (args[0].compareTo("deny") == 0)
+            {
+                arg_deny(sender, command, label, args, player);
             }
             else if (args[0].compareTo("merge") == 0)
             {
@@ -100,9 +108,43 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("op") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.ophelp"))
+                    arg_op(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
         }
 
         return true;
+    }
+
+    private void arg_help(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        player.sendMessage("§a[Plot] ───────────────────────");
+        player.sendMessage("§a · §7/plot help §f: 플롯 명령어를 봅니다");
+        player.sendMessage("§a · §7/plot info §f: 플롯의 정보를 확인합니다");
+        player.sendMessage("§a · §7/plot buy §f: 플롯을 구매합니다");
+        player.sendMessage("§a · §7/plot list [p] §f: 플레이어의 플롯을 확인합니다");
+        player.sendMessage("§a · §7/plot home [n] §f: 자신의 플롯으로 이동합니다");
+        player.sendMessage("§a · §7/plot tp <x> <z> §f: 해당 플롯으로 이동합니다");
+        player.sendMessage("§a · §7/plot helper <p> §f: 플롯의 도우미를 추가/삭제합니다");
+        player.sendMessage("§a · §7/plot deny <p> §f: 플롯에서 플레이어를 차단/해제합니다");
+        player.sendMessage("§a · §7/plot op §f: 관리자 명령어를 확인합니다 §c[OP]");
+    }
+
+    private void arg_op(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        player.sendMessage("§a[Plot] ───────────────────────");
+        player.sendMessage("§a · §7/plot merge §f: 플롯을 병합합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot detach §f: 플롯의 모든 병합을 해제합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot delete §f: 플롯을 삭제합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot move <x> <z> §f: 플롯을 이동시킵니다 §c[OP]");
+        player.sendMessage("§a · §7/plot give <p> §f: 플롯을 지급합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot maxplot <p> <n> §f: 최대 플롯을 설정합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot setskin <s> §f: 플롯 스킨을 설정합니다 §c[OP]");
+        player.sendMessage("§a · §7/plot clear §f: 플롯을 초기화합니다 §c[OP]");
     }
 
     private void arg_setskin(CommandSender sender, Command command, String label, String[] args, Player player)
@@ -131,6 +173,66 @@ public class PlotCommand implements CommandExecutor
         if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.success")); // 성공
         else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_owner")); // 주인이 없는 플롯
         else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_data")); // 데이터가 없는 스킨
+    }
+
+    private void arg_deny(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        if (args.length < 2)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.no_arg")); // 닉네임 입력하셈
+            return;
+        }
+
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().setDeny(x, z, args[1], player);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.add")); // 차단 추가됨
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.sub")); // 차단 삭제됨
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.no_player_data")); // 데이터가 없는 플레이어
+        else if (result == 3) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.no_owner")); // 주인이 없는 플롯
+        else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.diff_owner")); // 주인이 다른 플롯
+    }
+
+    private void arg_helper(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        if (args.length < 2)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.no_arg")); // 닉네임 입력하셈
+            return;
+        }
+
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().setHelper(x, z, args[1], player);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.add")); // 도우미 추가됨
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.sub")); // 도우미 삭제됨
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.no_player_data")); // 데이터가 없는 플레이어
+        else if (result == 3) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.no_owner")); // 주인이 없는 플롯
+        else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.diff_owner")); // 주인이 다른 플롯
     }
 
     private void arg_give(CommandSender sender, Command command, String label, String[] args, Player player)

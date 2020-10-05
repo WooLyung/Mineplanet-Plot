@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.PlotDatabase;
 import woolyung.main.plot.Data.PlayerData;
-import woolyung.main.plot.Data.PlotData;
 import woolyung.main.plot.Data.PlotDataEx;
 
 import java.util.ArrayList;
@@ -298,6 +297,48 @@ public class PlotManager
         setSkinPlots(x1, z1);
 
         return 0;
+    }
+
+    public int setHelper(int x, int z, String name, Player user)
+    {
+        PlayerData playerData = database.getPlayerDataByName(name);
+        if (playerData == null) return 2; // 데이터가 없는 플레이어
+
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 3; // 주인이 없는 플롯
+        if (plotDataEx.owner.compareTo(user.getUniqueId().toString()) != 0) return 4; // 그 플롯의 주인이 아님
+
+        if (plotDataEx.helpers.contains(playerData.uuid)) // 이미 존재할 경우 삭제
+        {
+            database.insertPlayerPlotData(x, z, playerData.uuid, "helper");
+            return 1;
+        }
+        else // 존재하지 않을 경우 추가
+        {
+            database.deletePlayerPlotData(x, z, playerData.uuid, "helper");
+            return 0;
+        }
+    }
+
+    public int setDeny(int x, int z, String name, Player user)
+    {
+        PlayerData playerData = database.getPlayerDataByName(name);
+        if (playerData == null) return 2; // 데이터가 없는 플레이어
+
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 3; // 주인이 없는 플롯
+        if (plotDataEx.owner.compareTo(user.getUniqueId().toString()) != 0) return 4; // 그 플롯의 주인이 아님
+
+        if (plotDataEx.denies.contains(playerData.uuid)) // 이미 존재할 경우 삭제
+        {
+            database.insertPlayerPlotData(x, z, playerData.uuid, "deny");
+            return 1;
+        }
+        else // 존재하지 않을 경우 추가
+        {
+            database.deletePlayerPlotData(x, z, playerData.uuid, "deny");
+            return 0;
+        }
     }
 
     public int detachPlot(int x, int z)

@@ -25,6 +25,22 @@ message:
     over_radius: "범위 넘음"
     teleport: "텔레포트함"
     error: "명령어 에러"
+  helper:
+    no_arg: "argument 부족함"
+    not_plot_world: "플롯 월드가 아님"
+    no_player_data: "데이터가 존재하지 않는 플레이어임"
+    no_owner: "주인이 없는 플롯"
+    diff_owner: "주인이 다른 플롯"
+    add: "그 플레이어를 도우미 목록에 추가함"
+    sub: "그 플레이어를 도우미 목록에서 삭제함"
+  deny:
+    no_arg: "argument 부족함"
+    not_plot_world: "플롯 월드가 아님"
+    no_player_data: "데이터가 존재하지 않는 플레이어임"
+    no_owner: "주인이 없는 플롯"
+    diff_owner: "주인이 다른 플롯"
+    add: "그 플레이어를 차단 목록에 추가함"
+    sub: "그 플레이어를 차단 목록에서 삭제함"
   merge:
     not_plot_world: "플롯 월드가 아님"
     not_between: "플롯과 플롯 사이가 아님"

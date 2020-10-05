@@ -331,6 +331,19 @@ public class PlotDatabase
         }
     }
 
+    public void deletePlayerPlotData(int x, int z, String uuid, String authority)
+    {
+        try {
+            String pos = x + ":" + z;
+
+            statement.execute("DELETE FROM player_plot WHERE (authority = '" + authority + "', pos = '" + pos + "' AND uuid = '" + uuid + "')");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void detachExtend4(int x, int z)
     {
         try
