@@ -2,6 +2,7 @@ package woolyung.main.plot;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
@@ -47,6 +48,122 @@ public class PlotManager
         MineplanetPlot.instance.getPlotDatabase().insertPlotData(x, z);
         MineplanetPlot.instance.getPlotDatabase().insertPlayerPlotData(x, z, uuid, "owner");
         return 0;
+    }
+
+    public Biome getBiome(String biome)
+    {
+        if (biome.compareTo("plains") == 0) return Biome.PLAINS;
+        if (biome.compareTo("badlands") == 0) return Biome.BADLANDS;
+        if (biome.compareTo("beach") == 0) return Biome.BEACH;
+        if (biome.compareTo("birch_forest") == 0) return Biome.BIRCH_FOREST;
+        if (biome.compareTo("cold_ocean") == 0) return Biome.COLD_OCEAN;
+        if (biome.compareTo("dark_forest") == 0) return Biome.DARK_FOREST;
+        if (biome.compareTo("desert") == 0) return Biome.DESERT;
+        if (biome.compareTo("forest") == 0) return Biome.FOREST;
+        if (biome.compareTo("flower_forest") == 0) return Biome.FLOWER_FOREST;
+        if (biome.compareTo("frozen_ocean") == 0) return Biome.FROZEN_OCEAN;
+        if (biome.compareTo("frozen_river") == 0) return Biome.FROZEN_RIVER;
+        if (biome.compareTo("giant_spruce_taiga") == 0) return Biome.GIANT_SPRUCE_TAIGA;
+        if (biome.compareTo("giant_tree_taiga") == 0) return Biome.GIANT_TREE_TAIGA;
+        if (biome.compareTo("gravelly_mountains") == 0) return Biome.GRAVELLY_MOUNTAINS;
+        if (biome.compareTo("ice_spikes") == 0) return Biome.ICE_SPIKES;
+        if (biome.compareTo("jungle") == 0) return Biome.JUNGLE;
+        if (biome.compareTo("lukewarm_ocean") == 0) return Biome.LUKEWARM_OCEAN;
+        if (biome.compareTo("mountains") == 0) return Biome.MOUNTAINS;
+        if (biome.compareTo("mushroom_fields") == 0) return Biome.MUSHROOM_FIELDS;
+        if (biome.compareTo("ocean") == 0) return Biome.OCEAN;
+        if (biome.compareTo("river") == 0) return Biome.RIVER;
+        if (biome.compareTo("savanna") == 0) return Biome.SAVANNA;
+        if (biome.compareTo("snowy_beach") == 0) return Biome.SNOWY_BEACH;
+        if (biome.compareTo("snowy_mountains") == 0) return Biome.SNOWY_MOUNTAINS;
+        if (biome.compareTo("snowy_taiga") == 0) return Biome.SNOWY_TAIGA;
+        if (biome.compareTo("snowy_tundra") == 0) return Biome.SNOWY_TUNDRA;
+        if (biome.compareTo("stone_shore") == 0) return Biome.STONE_SHORE;
+        if (biome.compareTo("sunflower_plains") == 0) return Biome.SUNFLOWER_PLAINS;
+        if (biome.compareTo("swamp") == 0) return Biome.SWAMP;
+        if (biome.compareTo("taiga") == 0) return Biome.TAIGA;
+        if (biome.compareTo("warm_ocean") == 0) return Biome.WARM_OCEAN;
+        return null;
+    }
+
+    public int setBiomes(int x, int z, String biomeS)
+    {
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+
+        Biome biome = getBiome(biomeS);
+        if (biome == null) return 2;
+
+        database.setBiomeData(x, z, biomeS);
+
+        for (String plot : database.getPlotByExtendPlot(plotDataEx.extend))
+        {
+            String[] coord = plot.split(":");
+            setBiome(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]), biome);
+        }
+
+        return 0;
+    }
+
+    public int setBiomes(int x, int z)
+    {
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+
+        Biome biome = getBiome(plotDataEx.biome);
+
+        for (String plot : database.getPlotByExtendPlot(plotDataEx.extend))
+        {
+            String[] coord = plot.split(":");
+            setBiome(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]), biome);
+        }
+
+        return 0;
+    }
+
+    public void setBiome(int x, int z, Biome biome)
+    {
+        int centerX = x * 44, centerZ = z * 44;
+        for (int ix = -12; ix <= 12; ix++)
+        {
+            for (int iz = -12; iz <= 12; iz++)
+            {
+                world.getWorld().setBiome(ix + centerX, 0, iz + centerZ, biome);
+            }
+        }
+
+        if (database.getIsExtended(x, z, x + 1, z))
+        {
+            for (int ix = 13; ix <= 31; ix++)
+            {
+                for (int iz = -12; iz <= 12; iz++)
+                {
+                    world.getWorld().setBiome(ix + centerX, 0, iz + centerZ, biome);
+                }
+            }
+        }
+
+        if (database.getIsExtended(x, z, x, z + 1))
+        {
+            for (int ix = -12; ix <= 12; ix++)
+            {
+                for (int iz = 13; iz <= 31; iz++)
+                {
+                    world.getWorld().setBiome(ix + centerX, 0, iz + centerZ, biome);
+                }
+            }
+        }
+
+        if (database.getIsExtended4(x, z, x + 1, z + 1))
+        {
+            for (int ix = 13; ix <= 31; ix++)
+            {
+                for (int iz = 13; iz <= 31; iz++)
+                {
+                    world.getWorld().setBiome(ix + centerX, 0, iz + centerZ, biome);
+                }
+            }
+        }
     }
 
     public int clearPlots(int x, int z)
@@ -207,8 +324,7 @@ public class PlotManager
             {
                 for (int iy = 0; iy < 256; iy++)
                 {
-                    if (world.getWorld().getBlockAt(ix, iy, iz).getBlockData() != world.getDefaultWorldBlock(ix, iy, iz))
-                        world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
+                    world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
                 }
             }
         }
@@ -282,6 +398,7 @@ public class PlotManager
         }
 
         deleteSkin(x1, z1);
+        setBiomes(x1, z1, "plains");
 
         // 블럭 채우기
         int centerX = x1 * 44;
@@ -364,6 +481,7 @@ public class PlotManager
 
         // 스킨 제거
         deleteSkin(x1, z1);
+        setBiomes(x1, z1, "plains");
 
         // 데이터 입력
         database.insertExtend4(x1, z1, x2, z2);
@@ -439,6 +557,7 @@ public class PlotManager
         if (!database.getIsExtended(x, z, x + 1, z) && !database.getIsExtended(x, z, x - 1, z) && !database.getIsExtended(x, z, x, z + 1) && !database.getIsExtended(x, z, x, z - 1)) return 2; // 확장이 안된 플롯
 
         deleteSkin(x, z); // 스킨 삭제
+        setBiomes(x, z, "plains"); // 바이옴 초기화
         database.detachExtend2(x, z);  // 두 플롯의 병합을 해제
         PlotDataEx preserveData = database.getPlotDataEx(x, z); // 데이터 보존
         database.deletePlotData(preserveData.extend); // 데이터 삭제
@@ -538,6 +657,8 @@ public class PlotManager
                             if (world.getWorld().getBlockAt(ix, iy, iz).getBlockData() != world.getDefaultWorldBlock(ix, iy, iz))
                                 world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
                         }
+
+                        world.getWorld().setBiome(ix, 0, iz, Biome.PLAINS);
                     }
                 }
             }
@@ -552,6 +673,16 @@ public class PlotManager
         setSkinPlots(x + 1, z - 1);
         setSkinPlots(x - 1, z - 1);
         setSkinPlots(x - 1, z + 1);
+
+        setBiomes(x, z);
+        setBiomes(x + 1, z);
+        setBiomes(x, z + 1);
+        setBiomes(x, z - 1);
+        setBiomes(x - 1, z);
+        setBiomes(x + 1, z + 1);
+        setBiomes(x + 1, z - 1);
+        setBiomes(x - 1, z - 1);
+        setBiomes(x - 1, z + 1);
 
         return 0;
     }

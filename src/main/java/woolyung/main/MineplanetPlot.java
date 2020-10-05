@@ -5,10 +5,8 @@ import woolyung.main.Events.BlockBreakEventListener;
 import woolyung.main.Events.BlockPlaceEventListener;
 import woolyung.main.Events.PlayerJoinEventListener;
 import woolyung.main.commands.PlotCommand;
-import woolyung.main.plot.Data.SkinData;
 import woolyung.main.plot.PlotManager;
 import woolyung.main.plot.PlotWorld;
-import woolyung.main.plot.SkinManager;
 
 import java.io.File;
 

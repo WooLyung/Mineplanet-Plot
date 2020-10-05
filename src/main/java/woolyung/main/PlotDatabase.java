@@ -702,4 +702,19 @@ public class PlotDatabase
             e.printStackTrace();
         }
     }
+
+    public void setBiomeData(int x, int z, String biome)
+    {
+        try
+        {
+            PlotData plotData = getPlotData(x, z);
+            if (plotData == null) return;
+
+            statement.execute("UPDATE plot_data SET biome = '" + biome + "' WHERE pos = '" + plotData.extend + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

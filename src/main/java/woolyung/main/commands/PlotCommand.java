@@ -122,6 +122,13 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("setbiome") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.setbiome"))
+                    arg_setbiome(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
             else
             {
                 player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.wrong_command"));
@@ -149,7 +156,7 @@ public class PlotCommand implements CommandExecutor
     {
         player.sendMessage("§a[Plot] ───────────────────────");
         player.sendMessage("§a · §7/plot merge §f: 플롯을 병합합니다");
-        player.sendMessage("§a · §7/plot detach §f: 플롯의 모든 병합을 해제합니다]");
+        player.sendMessage("§a · §7/plot detach §f: 플롯의 모든 병합을 해제합니다");
         player.sendMessage("§a · §7/plot delete §f: 플롯을 삭제합니다");
         player.sendMessage("§a · §7/plot move <x> <z> §f: 플롯을 이동시킵니다");
         player.sendMessage("§a · §7/plot give <p> §f: 플롯을 지급합니다");
@@ -157,6 +164,34 @@ public class PlotCommand implements CommandExecutor
         player.sendMessage("§a · §7/plot setskin <s> §f: 플롯 스킨을 설정합니다");
         player.sendMessage("§a · §7/plot setbiome <b> §f: 바이옴을 설정합니다");
         player.sendMessage("§a · §7/plot clear §f: 플롯을 초기화합니다");
+    }
+
+    private void arg_setbiome(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        if (args.length < 2)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setbiome.no_arg")); // 바이옴 입력하셈
+            return;
+        }
+
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setbiome.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        int result = MineplanetPlot.instance.getPlotManager().setBiomes(x, z, args[1]);
+
+        if (result == 0) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setbiome.success")); // 성공
+        else if (result == 1) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setbiome.no_owner")); // 주인이 없는 플롯
+        else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setbiome.wrong_biome")); // 잘못된 바이옴
     }
 
     private void arg_clear(CommandSender sender, Command command, String label, String[] args, Player player)

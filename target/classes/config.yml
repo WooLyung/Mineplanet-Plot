@@ -91,3 +91,9 @@ message:
     no_owner: "주인 없는 플롯"
     not_plot_world: "플롯 월드가 아님"
     success: "초기화 성공"
+  setbiome:
+    no_arg: "argument 부족함"
+    no_owner: "주인 없는 플롯"
+    not_plot_world: "플롯 월드가 아님"
+    success: "바이옴 설정 성공"
+    wrong_biome: "잘못된 바이옴"
