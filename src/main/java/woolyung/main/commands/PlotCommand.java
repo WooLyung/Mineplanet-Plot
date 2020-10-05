@@ -271,6 +271,7 @@ public class PlotCommand implements CommandExecutor
         else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.no_player_data")); // 데이터가 없는 플레이어
         else if (result == 3) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.no_owner")); // 주인이 없는 플롯
         else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.diff_owner")); // 주인이 다른 플롯
+        else if (result == 5) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.helper")); // 헬퍼 플레이어
     }
 
     private void arg_helper(CommandSender sender, Command command, String label, String[] args, Player player)
@@ -301,6 +302,7 @@ public class PlotCommand implements CommandExecutor
         else if (result == 2) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.no_player_data")); // 데이터가 없는 플레이어
         else if (result == 3) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.no_owner")); // 주인이 없는 플롯
         else if (result == 4) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.diff_owner")); // 주인이 다른 플롯
+        else if (result == 5) player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.deny")); // 차단 플레이어
     }
 
     private void arg_give(CommandSender sender, Command command, String label, String[] args, Player player)

@@ -35,6 +35,7 @@ message:
     diff_owner: "주인이 다른 플롯"
     add: "그 플레이어를 도우미 목록에 추가함"
     sub: "그 플레이어를 도우미 목록에서 삭제함"
+    deny: "차단 플레이어임"
   deny:
     no_arg: "argument 부족함"
     not_plot_world: "플롯 월드가 아님"
@@ -43,6 +44,7 @@ message:
     diff_owner: "주인이 다른 플롯"
     add: "그 플레이어를 차단 목록에 추가함"
     sub: "그 플레이어를 차단 목록에서 삭제함"
+    helper: "헬퍼 플레이어임"
   merge:
     not_plot_world: "플롯 월드가 아님"
     not_between: "플롯과 플롯 사이가 아님"

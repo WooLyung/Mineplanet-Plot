@@ -336,7 +336,7 @@ public class PlotDatabase
         try {
             String pos = x + ":" + z;
 
-            statement.execute("DELETE FROM player_plot WHERE (authority = '" + authority + "', pos = '" + pos + "' AND uuid = '" + uuid + "')");
+            statement.execute("DELETE FROM player_plot WHERE (authority = '" + authority + "' AND pos = '" + pos + "' AND uuid = '" + uuid + "')");
         }
         catch (Exception e)
         {

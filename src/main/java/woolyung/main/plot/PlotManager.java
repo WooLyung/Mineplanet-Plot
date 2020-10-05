@@ -515,15 +515,17 @@ public class PlotManager
         PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
         if (plotDataEx == null) return 3; // 주인이 없는 플롯
         if (plotDataEx.owner.compareTo(user.getUniqueId().toString()) != 0) return 4; // 그 플롯의 주인이 아님
+        if (plotDataEx.denies.contains(playerData.uuid)) return 5; // 차단 플레이어
 
         if (plotDataEx.helpers.contains(playerData.uuid)) // 이미 존재할 경우 삭제
         {
-            database.insertPlayerPlotData(x, z, playerData.uuid, "helper");
+            String[] st = plotDataEx.extend.split(":");
+            database.deletePlayerPlotData(Integer.parseInt(st[0]), Integer.parseInt(st[1]), playerData.uuid, "helper");
             return 1;
         }
         else // 존재하지 않을 경우 추가
         {
-            database.deletePlayerPlotData(x, z, playerData.uuid, "helper");
+            database.insertPlayerPlotData(plotDataEx.extend, playerData.uuid, "helper");
             return 0;
         }
     }
@@ -536,15 +538,17 @@ public class PlotManager
         PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
         if (plotDataEx == null) return 3; // 주인이 없는 플롯
         if (plotDataEx.owner.compareTo(user.getUniqueId().toString()) != 0) return 4; // 그 플롯의 주인이 아님
+        if (plotDataEx.helpers.contains(playerData.uuid)) return 5; // 헬퍼 플레이어
 
         if (plotDataEx.denies.contains(playerData.uuid)) // 이미 존재할 경우 삭제
         {
-            database.insertPlayerPlotData(x, z, playerData.uuid, "deny");
+            String[] st = plotDataEx.extend.split(":");
+            database.deletePlayerPlotData(Integer.parseInt(st[0]), Integer.parseInt(st[1]), playerData.uuid, "deny");
             return 1;
         }
         else // 존재하지 않을 경우 추가
         {
-            database.deletePlayerPlotData(x, z, playerData.uuid, "deny");
+            database.insertPlayerPlotData(plotDataEx.extend, playerData.uuid, "deny");
             return 0;
         }
     }
