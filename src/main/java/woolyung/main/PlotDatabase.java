@@ -72,7 +72,7 @@ public class PlotDatabase
 
             // 플롯 데이터 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_data'").getInt(1) == 0)
-                statement.execute("CREATE TABLE plot_data (pos TEXT PRIMARY KEY, skin TEXT, biome TEXT, pvp INTEGER, click INTEGER, block_click INTEGER, item_clear INTEGER)");
+                statement.execute("CREATE TABLE plot_data (pos TEXT PRIMARY KEY, skin TEXT, biome TEXT, pvp INTEGER, click INTEGER, block_click INTEGER, item_clear INTEGER, spawn_animal INTEGER, attack_animal INTEGER, flow INTEGER)");
 
             // 플롯 병합2 테이블
             if (statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE Name = 'plot_extend2'").getInt(1) == 0)
@@ -134,6 +134,9 @@ public class PlotDatabase
             plotDataEx.click = result2.getInt("click") == 1;
             plotDataEx.blockClick = result2.getInt("block_click") == 1;
             plotDataEx.itemClear = result2.getInt("item_clear") == 1;
+            plotDataEx.spawn_animal = result2.getInt("spawn_animal") == 1;
+            plotDataEx.attack_animal = result2.getInt("attack_animal") == 1;
+            plotDataEx.flow = result2.getInt("flow") == 1;
 
             ArrayList<String> extendPlots = getPlotByExtendPlot(posX, posZ);
             plotDataEx.plotSize = extendPlots.size();
@@ -596,7 +599,7 @@ public class PlotDatabase
     {
         try
         {
-            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', '" + data.skin + "', '" + data.biome + "', " + data.pvp + ", " + data.click + ", " + data.blockClick + ", " + data.itemClear + ")");
+            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', '" + data.skin + "', '" + data.biome + "', " + data.pvp + ", " + data.click + ", " + data.blockClick + ", " + data.itemClear + ", " + data.spawn_animal + ", " + data.attack_animal + ", " + data.flow + ")");
 
             insertPlayerPlotData(pos, data.owner, "owner");
             for (String player : data.helpers)
@@ -616,7 +619,7 @@ public class PlotDatabase
         {
             String pos = x + ":" + z;
 
-            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', 'default', 'plains', 0, 1, 0, 1)");
+            statement.execute("INSERT INTO plot_data VALUES ('" + pos + "', 'default', 'plains', 0, 1, 0, 0, 0, 0, 1)");
             statement.execute("INSERT INTO plot VALUES ('" + pos + "', '" + pos + "')");
         }
         catch (Exception e)
@@ -711,6 +714,18 @@ public class PlotDatabase
             if (plotData == null) return;
 
             statement.execute("UPDATE plot_data SET biome = '" + biome + "' WHERE pos = '" + plotData.extend + "'");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePlotSettingInt(String pos, String setting, int value)
+    {
+        try
+        {
+            statement.execute("UPDATE plot_data SET " + setting + " = '" + value + "' WHERE pos = '" + pos + "'");
         }
         catch (Exception e)
         {

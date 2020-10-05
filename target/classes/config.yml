@@ -99,3 +99,10 @@ message:
     not_plot_world: "플롯 월드가 아님"
     success: "바이옴 설정 성공"
     wrong_biome: "잘못된 바이옴"
+  set:
+    not_plot_world: "플롯 월드가 아님"
+    no_owner: "주인 없는 플롯"
+    diff_owner: "다른 주인의 플롯"
+    wrong_set: "알 수 없는 설정"
+    wrong_value: "알 수 없는 값"
+    success: "설정 완료"

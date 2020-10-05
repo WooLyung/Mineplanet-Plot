@@ -16,4 +16,7 @@ public class PlotDataEx extends PlotData
     public boolean click;
     public boolean blockClick;
     public boolean itemClear;
+    public boolean spawn_animal;
+    public boolean attack_animal;
+    public boolean flow;
 }

@@ -315,6 +315,8 @@ public class PlotManager
         detachPlot(x, z); // 플롯 병합 해제
 
         // 데이터 삭제
+        deleteSkin(x, z);
+        setBiomes(x, z, "plains");
         database.deletePlot(x, z);
 
         int centerX = x * 44, centerZ = z * 44;
@@ -732,9 +734,14 @@ public class PlotManager
         return 0;
     }
 
-    public void settingPlotInt(int x, int z, String setting, int value)
+    public int settingPlotInt(int x, int z, String setting, int value)
     {
-        // 정수 설정
+        PlotDataEx plotDataEx = database.getPlotDataEx(x, z);
+        if (plotDataEx == null) return 1;
+
+        database.updatePlotSettingInt(plotDataEx.extend, setting, value);
+
+        return 0;
     }
 
     public void settingPlotString(int x, int z, String setting, String value)

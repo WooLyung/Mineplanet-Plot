@@ -12,9 +12,6 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import woolyung.main.MineplanetPlot;
-import woolyung.main.PlotDatabase;
-import woolyung.main.SkinDatabase;
 import woolyung.main.plot.Data.SkinData;
 import woolyung.main.plot.PlotWorld;
 

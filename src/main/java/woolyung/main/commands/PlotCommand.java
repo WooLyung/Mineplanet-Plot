@@ -59,6 +59,10 @@ public class PlotCommand implements CommandExecutor
             {
                 arg_deny(sender, command, label, args, player);
             }
+            else if (args[0].compareTo("set") == 0)
+            {
+                arg_set(sender, command, label, args, player);
+            }
             else if (args[0].compareTo("merge") == 0)
             {
                 if (player.hasPermission("mcplanetplot.permission.merge"))
@@ -149,6 +153,7 @@ public class PlotCommand implements CommandExecutor
         player.sendMessage("§a · §7/plot tp <x> <z> §f: 해당 플롯으로 이동합니다");
         player.sendMessage("§a · §7/plot helper <p> §f: 플롯의 도우미를 추가/삭제합니다");
         player.sendMessage("§a · §7/plot deny <p> §f: 플롯에서 플레이어를 차단/해제합니다");
+        player.sendMessage("§a · §7/plot set §f: 플롯을 설정합니다");
         player.sendMessage("§a · §7/plot op §f: 관리자 명령어를 확인합니다 §c[OP]");
     }
 
@@ -164,6 +169,69 @@ public class PlotCommand implements CommandExecutor
         player.sendMessage("§a · §7/plot setskin <s> §f: 플롯 스킨을 설정합니다");
         player.sendMessage("§a · §7/plot setbiome <b> §f: 바이옴을 설정합니다");
         player.sendMessage("§a · §7/plot clear §f: 플롯을 초기화합니다");
+    }
+
+    private void arg_set(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        int player_posX = player.getLocation().getBlockX();
+        int player_posZ = player.getLocation().getBlockZ();
+        PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
+
+        int x = plotLocData.plotLocX;
+        int z = plotLocData.plotLocZ;
+
+        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.not_plot_world")); // 플롯 월드가 아님
+            return;
+        }
+
+        PlotDataEx plotDataEx = MineplanetPlot.instance.getPlotDatabase().getPlotDataEx(x, z);
+        if (plotDataEx == null)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.no_owner")); // 주인 없는 플롯
+            return;
+        }
+        if (plotDataEx.owner.compareTo(player.getUniqueId().toString()) != 0)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.diff_owner")); // 다른 주인
+            return;
+        }
+
+        if (args.length == 1 || args.length == 2)
+        {
+            player.sendMessage("§a[Plot] ───────────────────────");
+            player.sendMessage("§a · §7/plot set <s> <on/off> §f: 플롯을 설정합니다");
+            player.sendMessage("");
+            player.sendMessage(getSettingString(plotDataEx.pvp) + "§7 pvp §f: 플롯 내 pvp를 설정합니다");
+            player.sendMessage(getSettingString(plotDataEx.blockClick) + "§7 blcok_click §f: 상자, 화로 등의 클릭을 설정합니다");
+            player.sendMessage(getSettingString(plotDataEx.click) + "§7 click §f: 기타 우클릭을 설정합니다");
+            player.sendMessage(getSettingString(plotDataEx.itemClear) + "§7 item_clear §f: 떨어진 아이템 청소를 설정합니다");
+            player.sendMessage(getSettingString(plotDataEx.spawn_animal) + "§7 spawn_animal §f: 동물 스폰을 설정합니다");
+            player.sendMessage(getSettingString(plotDataEx.attack_animal) + "§7 attack_animal §f: 동물 공격을 설정합니다");
+            player.sendMessage(getSettingString(plotDataEx.flow) + "§7 flow §f: 물과 용암의 흐름을 설정합니다");
+        }
+        else
+        {
+            if (args[1].compareTo("pvp") != 0 && args[1].compareTo("block_click") != 0 && args[1].compareTo("click") != 0 && args[1].compareTo("item_clear") != 0 && args[1].compareTo("spawn_animal") != 0 && args[1].compareTo("attack_animal") != 0 && args[1].compareTo("flow") != 0)
+            {
+                player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.wrong_set")); // 잘못된 설정
+                return;
+            }
+            if (args[2].compareTo("on") != 0 && args[2].compareTo("off") != 0)
+            {
+                player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.wrong_value")); // 잘못된 값
+                return;
+            }
+
+            MineplanetPlot.instance.getPlotManager().settingPlotInt(x, z, args[1], (args[2].compareTo("on") == 0 ? 1 : 0));
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.success")); // 성공
+        }
+    }
+
+    private String getSettingString(boolean value)
+    {
+        return value ? "§a(on)" : "§c(off)";
     }
 
     private void arg_setbiome(CommandSender sender, Command command, String label, String[] args, Player player)
