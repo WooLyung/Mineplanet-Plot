@@ -144,7 +144,7 @@ public class PlotCommand implements CommandExecutor
 
     private void arg_help(CommandSender sender, Command command, String label, String[] args, Player player)
     {
-        player.sendMessage("§a[Plot] ───────────────────────");
+        player.sendMessage("§a[Plot] ─────────────────────────");
         player.sendMessage("§a · §7/plot help §f: 플롯 명령어를 봅니다");
         player.sendMessage("§a · §7/plot info §f: 플롯의 정보를 확인합니다");
         player.sendMessage("§a · §7/plot buy §f: 플롯을 구매합니다");
@@ -159,7 +159,7 @@ public class PlotCommand implements CommandExecutor
 
     private void arg_op(CommandSender sender, Command command, String label, String[] args, Player player)
     {
-        player.sendMessage("§a[Plot] ───────────────────────");
+        player.sendMessage("§a[Plot] ─────────────────────────");
         player.sendMessage("§a · §7/plot merge §f: 플롯을 병합합니다");
         player.sendMessage("§a · §7/plot detach §f: 플롯의 모든 병합을 해제합니다");
         player.sendMessage("§a · §7/plot delete §f: 플롯을 삭제합니다");
@@ -200,7 +200,7 @@ public class PlotCommand implements CommandExecutor
 
         if (args.length == 1 || args.length == 2)
         {
-            player.sendMessage("§a[Plot] ───────────────────────");
+            player.sendMessage("§a[Plot] ─────────────────────────");
             player.sendMessage("§a · §7/plot set <s> <on/off> §f: 플롯을 설정합니다");
             player.sendMessage("");
             player.sendMessage(getSettingString(plotDataEx.pvp) + "§7 pvp §f: 플롯 내 pvp를 설정합니다");

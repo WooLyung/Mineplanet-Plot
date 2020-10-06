@@ -315,9 +315,10 @@ public class PlotManager
         detachPlot(x, z); // 플롯 병합 해제
 
         // 데이터 삭제
-        deleteSkin(x, z);
+        setSkinPlots(x, z, "default");
         setBiomes(x, z, "plains");
         database.deletePlot(x, z);
+        setSkinPlot(x, z);
 
         int centerX = x * 44, centerZ = z * 44;
         for (int ix = centerX - 12; ix <= centerX + 12; ix++)
@@ -412,8 +413,11 @@ public class PlotManager
             {
                 for (int x = centerX - 12; x <= centerX + 12; x++)
                 {
-                    for (int y = plugin.getConfig().getInt("height") - 3; y <= plugin.getConfig().getInt("height") - 1; y++) {
+                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
+                    }
+                    for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
+                        world.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
                 }
@@ -425,9 +429,11 @@ public class PlotManager
             {
                 for (int x = centerX - 12; x <= centerX + 12; x++)
                 {
-                    for (int y = plugin.getConfig().getInt("height") - 3; y <= plugin.getConfig().getInt("height") - 1; y++)
-                    {
+                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
+                    }
+                    for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
+                        world.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
                 }
@@ -439,9 +445,11 @@ public class PlotManager
             {
                 for (int z = centerZ - 12; z <= centerZ + 12; z++)
                 {
-                    for (int y = plugin.getConfig().getInt("height") - 3; y <= plugin.getConfig().getInt("height") - 1; y++)
-                    {
+                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
+                    }
+                    for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
+                        world.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
                 }
@@ -453,9 +461,11 @@ public class PlotManager
             {
                 for (int z = centerZ - 12; z <= centerZ + 12; z++)
                 {
-                    for (int y = plugin.getConfig().getInt("height") - 3; y <= plugin.getConfig().getInt("height") - 1; y++)
-                    {
+                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
+                    }
+                    for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
+                        world.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                     }
                     world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
                 }
@@ -496,9 +506,13 @@ public class PlotManager
         {
             for (int z = centerZ - 9; z <= centerZ + 9; z++)
             {
-                for (int y = plugin.getConfig().getInt("height") - 3; y < plugin.getConfig().getInt("height"); y++)
+                for (int y = 0; y < plugin.getConfig().getInt("height"); y++)
                 {
                     world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
+                }
+                for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 20; y++)
+                {
+                    world.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                 }
                 world.getWorld().getBlockAt(x, plugin.getConfig().getInt("height"), z).setType(Material.GRASS_BLOCK);
             }
