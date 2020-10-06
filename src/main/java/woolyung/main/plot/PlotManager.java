@@ -1,11 +1,24 @@
 package woolyung.main.plot;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.World;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.PlotDatabase;
@@ -71,6 +84,7 @@ public class PlotManager
         if (biome.compareTo("lukewarm_ocean") == 0) return Biome.LUKEWARM_OCEAN;
         if (biome.compareTo("mountains") == 0) return Biome.MOUNTAINS;
         if (biome.compareTo("mushroom_fields") == 0) return Biome.MUSHROOM_FIELDS;
+        if (biome.compareTo("bamboo_jungle") == 0) return Biome.BAMBOO_JUNGLE;
         if (biome.compareTo("ocean") == 0) return Biome.OCEAN;
         if (biome.compareTo("river") == 0) return Biome.RIVER;
         if (biome.compareTo("savanna") == 0) return Biome.SAVANNA;
@@ -276,15 +290,35 @@ public class PlotManager
         // 블럭 옮김
         int centerFromX = fromX * 44, centerFromZ = fromZ * 44;
         int centerToX = toX * 44, centerToZ = toZ * 44;
-        for (int ix = -12; ix <= 12; ix++)
+
+        CuboidRegion region = new CuboidRegion(new BukkitWorld(plugin.getPlotWorld().getWorld()), BlockVector3.at(centerFromX - 12, 0, centerFromZ - 12), BlockVector3.at(centerFromX + 12, 255, centerFromZ + 12));
+        BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
+
+        // 복사
+        try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(plugin.getPlotWorld().getWorld()), -1)) {
+            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(
+                    editSession, region, clipboard, region.getMinimumPoint()
+            );
+            forwardExtentCopy.setCopyingEntities(true);
+            Operations.complete(forwardExtentCopy);
+        }
+        catch (Exception e)
         {
-            for (int iz = -12; iz <= 12; iz++)
-            {
-                for (int iy = 0; iy < 256; iy++)
-                {
-                    world.getWorld().getBlockAt(ix + centerToX, iy, iz + centerToZ).setBlockData(world.getWorld().getBlockAt(ix + centerFromX, iy, iz + centerFromZ).getBlockData());
-                }
-            }
+            e.printStackTrace();
+        }
+
+        // 붙여넣기
+        try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(plugin.getPlotWorld().getWorld()), -1)) {
+            Operation operation = new ClipboardHolder(clipboard)
+                    .createPaste(editSession)
+                    .to(BlockVector3.at(centerToX - 12, 0, centerToZ - 12))
+                    .copyEntities(true)
+                    .build();
+            Operations.complete(operation);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
 
         // 데이터 삭제
@@ -328,6 +362,21 @@ public class PlotManager
                 for (int iy = 0; iy < 256; iy++)
                 {
                     world.getWorld().getBlockAt(ix, iy, iz).setBlockData(world.getDefaultWorldBlock(ix, iy, iz));
+                }
+            }
+        }
+
+        // 엔티티 삭제
+        for (Entity entity : world.getWorld().getEntities())
+        {
+            if (entity.getType() != EntityType.PLAYER)
+            {
+                if (entity.getLocation().getBlockX() >= centerX - 12 && entity.getLocation().getBlockX() <= centerX + 12)
+                {
+                    if (entity.getLocation().getBlockZ() >= centerZ - 12 && entity.getLocation().getBlockZ() <= centerZ + 12)
+                    {
+                        entity.remove();
+                    }
                 }
             }
         }
@@ -679,6 +728,23 @@ public class PlotManager
                         }
 
                         world.getWorld().setBiome(ix, 0, iz, Biome.PLAINS);
+                    }
+                }
+            }
+
+            // 엔티티 삭제
+            for (Entity entity : world.getWorld().getEntities())
+            {
+                if (entity.getType() != EntityType.PLAYER)
+                {
+                    if (entity.getLocation().getBlockX() >= centerX - 31 && entity.getLocation().getBlockX() <= centerX + 31
+                            && !(entity.getLocation().getBlockX() >= centerX - 12 && entity.getLocation().getBlockX() <= centerX + 12))
+                    {
+                        if (entity.getLocation().getBlockZ() >= centerZ - 31 && entity.getLocation().getBlockZ() <= centerZ + 31
+                                && !(entity.getLocation().getBlockZ() >= centerZ - 12 && entity.getLocation().getBlockZ() <= centerZ + 12))
+                        {
+                            entity.remove();
+                        }
                     }
                 }
             }

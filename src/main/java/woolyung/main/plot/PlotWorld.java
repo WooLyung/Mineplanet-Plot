@@ -7,7 +7,6 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.type.Stairs;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.plot.Data.PlotLocData;
 
