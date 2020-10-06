@@ -286,6 +286,53 @@ public class PlotDatabase
         return null;
     }
 
+    public PlayerDataEx getPlayerDataExByName(String name)
+    {
+        PlayerData playerData = getPlayerDataByName(name);
+        if (playerData == null) return null;
+
+        try
+        {
+            PlayerDataEx playerDataEx = new PlayerDataEx();
+            playerDataEx.maxPlot = playerData.maxPlot;
+            playerDataEx.uuid = playerData.uuid;
+            playerDataEx.name = playerData.name;
+
+            ArrayList<String> plots = new ArrayList<>();
+
+            ResultSet result = statement.executeQuery("SELECT * FROM player_plot WHERE uuid = '" + playerData.uuid + "'");
+            while (result.next())
+            {
+                String authority = result.getString("authority");
+                String pos = result.getString("pos");
+
+                if (authority.compareTo("owner") == 0)
+                {
+                    plots.add(pos);
+                }
+            }
+
+            for (String pos : plots)
+            {
+                ResultSet result2 = statement.executeQuery("SELECT * FROM plot WHERE extend = '" + pos + "'");
+                while (result2.next())
+                {
+                    playerDataEx.plots.add(result2.getString("pos"));
+                }
+            }
+
+            playerDataEx.plotCount = playerDataEx.plots.size();
+
+            return playerDataEx;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public boolean getIsExtended(int x1, int z1, int x2, int z2)
     {
         try {

@@ -12,6 +12,7 @@ import woolyung.main.plot.Data.PlotDataEx;
 import woolyung.main.plot.Data.PlotLocData;
 import woolyung.util.UUIDUtil;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class PlotCommand implements CommandExecutor
@@ -600,7 +601,7 @@ public class PlotCommand implements CommandExecutor
 
     private void arg_home(CommandSender sender, Command command, String label, String[] args, Player player)
     {
-        int plot = 0;
+        int plot = 1;
         try
         {
             if (args.length >= 2) plot = Integer.parseInt(args[1]);
@@ -617,11 +618,18 @@ public class PlotCommand implements CommandExecutor
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.no_plot")); // 플롯이 없음
             return;
         }
-        if (playerDataEx.plotCount <= plot)
+        if (plot <= 0)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.smaller_one")); // 1 이상으로 적어야함
+            return;
+        }
+        if (playerDataEx.plotCount < plot)
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.home.no_plot2")); // 플롯이 그 만큼 없음
             return;
         }
+
+        plot--;
 
         String[] pos = playerDataEx.plots.get(plot).split(":");
         int posX = Integer.parseInt(pos[0]) * 44;
@@ -634,11 +642,36 @@ public class PlotCommand implements CommandExecutor
 
     private void arg_list(CommandSender sender, Command command, String label, String[] args, Player player)
     {
-        PlayerDataEx playerDataEx = MineplanetPlot.instance.getPlotDatabase().getPlayerDataEx(player);
-        player.sendMessage("플롯 개수 : " + playerDataEx.plotCount + "/" + playerDataEx.maxPlot);
-        player.sendMessage("갖고 있는 플롯 : ");
-        for (String str : playerDataEx.plots)
-            player.sendMessage(str);
+        String ownerUUID;
+        PlayerDataEx playerDataEx;
+
+        if (args.length == 1)
+        {
+            playerDataEx = MineplanetPlot.instance.getPlotDatabase().getPlayerDataEx(player);
+        }
+        else
+        {
+            playerDataEx = MineplanetPlot.instance.getPlotDatabase().getPlayerDataExByName(args[1]);
+        }
+
+        if (playerDataEx == null)
+        {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.list.no_player")); // 알 수 없는 플레이어
+            return;
+        }
+
+        String plots = "";
+        for (int i = 0; i < playerDataEx.plotCount; i++)
+        {
+            if (i != 0)
+                plots += ", ";
+            plots += "[" + playerDataEx.plots.get(i) + "]";
+        }
+
+        player.sendMessage("§a[Plot] ─────────────────────────");
+        player.sendMessage("§a · §7주인 §f: [" + playerDataEx.name + "]");
+        player.sendMessage("§a · §7플롯개수 §f: " + playerDataEx.plotCount + "/" + playerDataEx.maxPlot);
+        player.sendMessage("§a · §7보유플롯 §f: " + plots);
     }
 
     private void arg_info(CommandSender sender, Command command, String label, String[] args, Player player)
@@ -664,18 +697,38 @@ public class PlotCommand implements CommandExecutor
 
         if (plotDataEx == null)
         {
-            player.sendMessage("[" + plotLocData.plotLocX + ":" + plotLocData.plotLocZ + "] 주인 없는 플롯"); // 주인 없는 플롯
+            player.sendMessage("§a[Plot] ─────────────────────────");
+            player.sendMessage("§a · §7플롯주소 §f: [" + plotLocData.plotLocX + ":" + plotLocData.plotLocZ + "]");
+            player.sendMessage("§a · §7주인 §f: 없음");
         }
         else
         {
-            player.sendMessage("[" + plotLocData.plotLocX + ":" + plotLocData.plotLocZ + "] " + UUIDUtil.getName(plotDataEx.owner) + " 님의 플롯 ");
-            player.sendMessage("[" + plotDataEx.extend + "] 의 하위 플롯 ");
-            player.sendMessage("도우미 리스트 : ");
-            for (String str : plotDataEx.helpers)
-                player.sendMessage(UUIDUtil.getName(str));
-            player.sendMessage("차단 리스트 : ");
-            for (String str : plotDataEx.denies)
-                player.sendMessage(UUIDUtil.getName(str));
+            String helpers = "";
+            String denies = "";
+
+            for (int i = 0; i < plotDataEx.helpers.size(); i++)
+            {
+                if (i != 0)
+                {
+                    helpers += ", ";
+                }
+                helpers += plotDataEx.helpers.get(i);
+            }
+            for (int i = 0; i < plotDataEx.denies.size(); i++)
+            {
+                if (i != 0)
+                {
+                    denies += ", ";
+                }
+                denies += plotDataEx.denies.get(i);
+            }
+
+            player.sendMessage("§a[Plot] ─────────────────────────");
+            player.sendMessage("§a · §7플롯주소 §f: [" + plotLocData.plotLocX + ":" + plotLocData.plotLocZ + "]");
+            player.sendMessage("§a · §7연결플롯 §f: " + MineplanetPlot.instance.getPlotDatabase().getPlotByExtendPlot(plotDataEx.extend).size() + "개");
+            player.sendMessage("§a · §7주인 §f: " + UUIDUtil.getName(plotDataEx.owner));
+            player.sendMessage("§a · §7도우미 §f: " + helpers);
+            player.sendMessage("§a · §7차단 §f: " + denies);
         }
     }
 
