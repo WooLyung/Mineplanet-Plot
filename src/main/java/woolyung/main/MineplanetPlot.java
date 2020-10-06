@@ -78,8 +78,10 @@ public final class MineplanetPlot extends JavaPlugin
         getServer().getPluginManager().registerEvents(new PlayerBucketEmptyEventListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerBucketFillEventListener(), this);
         getServer().getPluginManager().registerEvents(new EntityDamageByEntityEventListener(), this);
-        getServer().getPluginManager().registerEvents(new CreatureSpawnEventListener(), this);;
+        getServer().getPluginManager().registerEvents(new CreatureSpawnEventListener(), this);
         getServer().getPluginManager().registerEvents(new BlockFromToEventListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractEntityEventListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
     }
 
     private void createConfig()
