@@ -63,6 +63,43 @@ public class PlotManager
         return 0;
     }
 
+    public String getBiomeName(String biome)
+    {
+        if (biome.compareTo("plains") == 0) return "평야";
+        if (biome.compareTo("badlands") == 0) return "악지";
+        if (biome.compareTo("beach") == 0) return "해변";
+        if (biome.compareTo("birch_forest") == 0) return "자작나무 숲";
+        if (biome.compareTo("cold_ocean") == 0) return "추운 바다";
+        if (biome.compareTo("dark_forest") == 0) return "어두운 숲";
+        if (biome.compareTo("desert") == 0) return "사막";
+        if (biome.compareTo("forest") == 0) return "숲";
+        if (biome.compareTo("flower_forest") == 0) return "꽃 숲";
+        if (biome.compareTo("frozen_ocean") == 0) return "얼어붙은 바다";
+        if (biome.compareTo("frozen_river") == 0) return "얼어붙은 강";
+        if (biome.compareTo("giant_spruce_taiga") == 0) return "거대한 가문비나무 타이가";
+        if (biome.compareTo("giant_tree_taiga") == 0) return "거대한 나무 타이가";
+        if (biome.compareTo("gravelly_mountains") == 0) return "자갈 산";
+        if (biome.compareTo("ice_spikes") == 0) return "역고드름";
+        if (biome.compareTo("jungle") == 0) return "정글";
+        if (biome.compareTo("lukewarm_ocean") == 0) return "미지근한 바다";
+        if (biome.compareTo("mountains") == 0) return "산";
+        if (biome.compareTo("mushroom_fields") == 0) return "버섯 대지";
+        if (biome.compareTo("bamboo_jungle") == 0) return "대나무 정글";
+        if (biome.compareTo("ocean") == 0) return "바다";
+        if (biome.compareTo("river") == 0) return "강";
+        if (biome.compareTo("savanna") == 0) return "사바나";
+        if (biome.compareTo("snowy_beach") == 0) return "눈덮인 해변";
+        if (biome.compareTo("snowy_mountains") == 0) return "눈덮인 산";
+        if (biome.compareTo("snowy_taiga") == 0) return "눈덮인 타이가";
+        if (biome.compareTo("snowy_tundra") == 0) return "눈덮인 툰드라";
+        if (biome.compareTo("stone_shore") == 0) return "바위 기슭";
+        if (biome.compareTo("sunflower_plains") == 0) return "해바라기 평야";
+        if (biome.compareTo("swamp") == 0) return "늪";
+        if (biome.compareTo("taiga") == 0) return "타이가";
+        if (biome.compareTo("warm_ocean") == 0) return "따뜻한 바다";
+        return null;
+    }
+
     public Biome getBiome(String biome)
     {
         if (biome.compareTo("plains") == 0) return Biome.PLAINS;

@@ -726,6 +726,8 @@ public class PlotCommand implements CommandExecutor
             player.sendMessage("§a[Plot] ─────────────────────────");
             player.sendMessage("§a · §7플롯주소 §f: [" + plotLocData.plotLocX + ":" + plotLocData.plotLocZ + "]");
             player.sendMessage("§a · §7연결플롯 §f: " + MineplanetPlot.instance.getPlotDatabase().getPlotByExtendPlot(plotDataEx.extend).size() + "개");
+            player.sendMessage("§a · §7스킨 §f: " + MineplanetPlot.instance.getSkinDatabase().getSkinData(plotDataEx.skin).display_name);
+            player.sendMessage("§a · §7바이옴 §f: " + MineplanetPlot.instance.getPlotManager().getBiomeName(plotDataEx.biome));
             player.sendMessage("§a · §7주인 §f: " + UUIDUtil.getName(plotDataEx.owner));
             player.sendMessage("§a · §7도우미 §f: " + helpers);
             player.sendMessage("§a · §7차단 §f: " + denies);
