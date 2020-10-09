@@ -73,16 +73,12 @@ public final class MineplanetPlot extends JavaPlugin
         getCommand("plot").setExecutor(new PlotCommand());
 
         getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockBreakEventListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceEventListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerBucketEmptyEventListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerBucketFillEventListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityDamageByEntityEventListener(), this);
-        getServer().getPluginManager().registerEvents(new CreatureSpawnEventListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockFromToEventListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerInteractEntityEventListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockEventListener(), this);
+        getServer().getPluginManager().registerEvents(new BucketEventListener(), this);
+        getServer().getPluginManager().registerEvents(new AnimalEventListener(), this);
+        getServer().getPluginManager().registerEvents(new ClickEventListener(), this);
         getServer().getPluginManager().registerEvents(new ItemFrameEventListener(), this);
+        getServer().getPluginManager().registerEvents(new GrowEventListener(), this);
     }
 
     private void createConfig()

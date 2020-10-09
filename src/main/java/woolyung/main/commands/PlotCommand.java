@@ -712,7 +712,7 @@ public class PlotCommand implements CommandExecutor
                 {
                     helpers += ", ";
                 }
-                helpers += plotDataEx.helpers.get(i);
+                helpers += UUIDUtil.getName(plotDataEx.helpers.get(i));
             }
             for (int i = 0; i < plotDataEx.denies.size(); i++)
             {
@@ -720,7 +720,7 @@ public class PlotCommand implements CommandExecutor
                 {
                     denies += ", ";
                 }
-                denies += plotDataEx.denies.get(i);
+                denies += UUIDUtil.getName(plotDataEx.helpers.get(i));
             }
 
             player.sendMessage("§a[Plot] ─────────────────────────");
