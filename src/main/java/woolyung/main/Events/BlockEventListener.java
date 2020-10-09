@@ -41,7 +41,7 @@ public class BlockEventListener implements Listener
         if (event.getBlock().getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
             return;
 
-        if (event.getNewState().getBlock().getType() == Material.STONE || event.getNewState().getBlock().getType() == Material.OBSIDIAN) {
+        if (event.getNewState().getType() == Material.STONE || event.getNewState().getType() == Material.OBSIDIAN || event.getNewState().getType() == Material.COBBLESTONE) {
             event.setCancelled(true);
         }
     }
