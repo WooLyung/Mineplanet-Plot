@@ -34,7 +34,7 @@ public class AnimalEventListener implements Listener
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (Entity entity : world.getEntities())
                         {
-                            if (isAnimal(entity) && entity.getWorld().getName().compareTo(plugin.getConfig().getString("world")) == 0)
+                            if (isAnimal(entity) && !entity.getWorld().equals(plugin.getPlotWorld().getWorld()))
                             {
                                 PlotDataEx data = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(entity.getLocation().getBlockX(), entity.getLocation().getBlockZ());
                                 if (data == null)
@@ -80,7 +80,7 @@ public class AnimalEventListener implements Listener
         Entity entity = event.getEntity();
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
 
-        if (entity.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!entity.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (reason == CreatureSpawnEvent.SpawnReason.NATURAL)
@@ -112,7 +112,7 @@ public class AnimalEventListener implements Listener
         {
             Player attacker = (Player) event.getDamager();
 
-            if (attacker.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+            if (!attacker.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
                 return;
 
             if (attacker.hasPermission("mcplanetplot.permission.attack")) // 권한이 있음

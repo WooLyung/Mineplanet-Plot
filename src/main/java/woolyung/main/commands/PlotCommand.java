@@ -181,7 +181,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.set.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -250,7 +250,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setbiome.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -272,7 +272,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.clear.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -299,7 +299,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -327,7 +327,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.deny.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -358,7 +358,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.helper.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -389,7 +389,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.give.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -470,7 +470,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.move.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -492,7 +492,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.merge.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -529,7 +529,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.detach.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -551,7 +551,7 @@ public class PlotCommand implements CommandExecutor
         int x = plotLocData.plotLocX;
         int z = plotLocData.plotLocZ;
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.delete.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -681,7 +681,7 @@ public class PlotCommand implements CommandExecutor
         PlotLocData plotLocData = MineplanetPlot.instance.getPlotWorld().getPlotLocData(player_posX, player_posZ);
         PlotDataEx plotDataEx = MineplanetPlot.instance.getPlotDatabase().getPlotDataEx(plotLocData.plotLocX, plotLocData.plotLocZ);
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.info.not_plot_world")); // 플롯 월드가 아님
             return;
@@ -751,7 +751,7 @@ public class PlotCommand implements CommandExecutor
             }
         }
 
-        if (player.getWorld().getName() != MineplanetPlot.instance.getConfig().getString("world"))
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld()))
         {
             player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.buy.not_plot_world")); // 플롯 월드가 아님
             return;

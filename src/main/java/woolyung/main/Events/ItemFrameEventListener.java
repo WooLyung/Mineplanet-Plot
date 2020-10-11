@@ -15,7 +15,7 @@ public class ItemFrameEventListener implements Listener
     @EventHandler
     public void onFrameBreak(HangingBreakByEntityEvent event)
     {
-        if (event.getEntity().getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!event.getEntity().getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if(event.getRemover() instanceof Player)
@@ -49,7 +49,7 @@ public class ItemFrameEventListener implements Listener
     {
         Player player = event.getPlayer();
 
-        if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (player.hasPermission("mcplanetplot.permission.hanging")) // 권한이 있음
@@ -74,7 +74,7 @@ public class ItemFrameEventListener implements Listener
     {
         Player player = event.getPlayer();
 
-        if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (player.hasPermission("mcplanetplot.permission.hanging")) // 권한이 있음
@@ -98,7 +98,7 @@ public class ItemFrameEventListener implements Listener
         {
             Player player = (Player) event.getDamager();
 
-            if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+            if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
                 return;
 
             if (player.hasPermission("mcplanetplot.permission.hanging")) // 권한이 있음

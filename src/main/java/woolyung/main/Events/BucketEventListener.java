@@ -15,7 +15,7 @@ public class BucketEventListener implements Listener
     {
         Player player = event.getPlayer();
 
-        if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (player.hasPermission("mcplanetplot.permission.bucket")) // 권한이 있음
@@ -37,7 +37,7 @@ public class BucketEventListener implements Listener
     {
         Player player = event.getPlayer();
 
-        if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (player.hasPermission("mcplanetplot.permission.bucket")) // 권한이 있음

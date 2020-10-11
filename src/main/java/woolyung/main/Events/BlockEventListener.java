@@ -19,7 +19,7 @@ public class BlockEventListener implements Listener
     {
         Player player = event.getPlayer();
 
-        if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (player.hasPermission("mcplanetplot.permission.place")) // 권한이 있음
@@ -38,7 +38,7 @@ public class BlockEventListener implements Listener
 
     @EventHandler
     public void onBlockFormEvent(BlockFormEvent event) {
-        if (event.getBlock().getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!event.getBlock().getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (event.getNewState().getType() == Material.STONE || event.getNewState().getType() == Material.OBSIDIAN || event.getNewState().getType() == Material.COBBLESTONE) {
@@ -52,7 +52,7 @@ public class BlockEventListener implements Listener
         Block from = event.getBlock();
         Block to = event.getToBlock();
 
-        if (from.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!from.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (from.getType() == Material.LAVA || from.getType() == Material.WATER)
@@ -79,7 +79,7 @@ public class BlockEventListener implements Listener
     {
         Player player = event.getPlayer();
 
-        if (player.getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         if (player.hasPermission("mcplanetplot.permission.place")) // 권한이 있음

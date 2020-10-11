@@ -15,7 +15,7 @@ import woolyung.main.plot.Data.PlotLocData;
 public class GrowEventListener implements Listener {
     @EventHandler
     public void onStructureGrowEvent(StructureGrowEvent event) {
-        if (event.getBlocks().get(0).getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!event.getBlocks().get(0).getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         for (BlockState block : event.getBlocks()) {
@@ -29,7 +29,7 @@ public class GrowEventListener implements Listener {
 
     @EventHandler
     public void onBlockFertilizeEvent(BlockFertilizeEvent event) {
-        if (event.getBlocks().get(0).getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!event.getBlocks().get(0).getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         for (BlockState block : event.getBlocks()) {
@@ -43,7 +43,7 @@ public class GrowEventListener implements Listener {
 
     @EventHandler
     public void onBlockSpreadEvent(BlockSpreadEvent event) {
-        if (event.getBlock().getWorld().getName().compareTo(MineplanetPlot.instance.getConfig().getString("world")) != 0) // 월드가 다름
+        if (!event.getBlock().getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
         PlotDataEx plotData = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockZ());
