@@ -94,6 +94,9 @@ public class ItemFrameEventListener implements Listener
     @EventHandler
     public void onFrameLeftClick (EntityDamageByEntityEvent event)
     {
+        if (event.getEntity().getType() != EntityType.ARMOR_STAND && event.getEntity().getType() != EntityType.ITEM_FRAME && event.getEntity().getType() != EntityType.PAINTING)
+            return;
+
         if (event.getDamager() instanceof Player)
         {
             Player player = (Player) event.getDamager();

@@ -642,7 +642,6 @@ public class PlotCommand implements CommandExecutor
 
     private void arg_list(CommandSender sender, Command command, String label, String[] args, Player player)
     {
-        String ownerUUID;
         PlayerDataEx playerDataEx;
 
         if (args.length == 1)

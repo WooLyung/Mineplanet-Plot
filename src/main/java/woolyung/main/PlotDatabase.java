@@ -448,7 +448,7 @@ public class PlotDatabase
         try
         {
             if (statement.executeQuery("SELECT count(*) FROM player WHERE uuid = '" + player.getUniqueId() +"'").getInt(1) == 0)
-                statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', 100)");
+                statement.execute("INSERT INTO player VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', 1)");
             else
                 statement.execute("UPDATE player SET name = '" + player.getName() + "' WHERE uuid = '" + player.getUniqueId() + "'");
         }

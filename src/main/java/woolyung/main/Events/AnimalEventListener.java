@@ -123,8 +123,6 @@ public class AnimalEventListener implements Listener
 
             if (event.getEntity() instanceof Player)
             {
-                Player victim = (Player) event.getEntity();
-
                 if (plotDataAttacker == null || plotDataVictim == null)
                 {
                     event.setCancelled(true);
