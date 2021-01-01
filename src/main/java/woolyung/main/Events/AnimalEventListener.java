@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.plot.Data.PlotDataEx;
 
@@ -108,6 +109,13 @@ public class AnimalEventListener implements Listener
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
     {
+        if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+            if (isAnimal(event.getEntity()) && event.getEntity().getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         if (event.getDamager() instanceof Player)
         {
             Player attacker = (Player) event.getDamager();
