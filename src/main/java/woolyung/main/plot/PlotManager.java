@@ -592,7 +592,7 @@ public class PlotManager
         {
             for (int z = centerZ - 9; z <= centerZ + 9; z++)
             {
-                for (int y = 0; y < plugin.getConfig().getInt("height"); y++)
+                for (int y = 1; y < plugin.getConfig().getInt("height"); y++)
                 {
                     world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                 }
