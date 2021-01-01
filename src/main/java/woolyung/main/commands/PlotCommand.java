@@ -719,7 +719,7 @@ public class PlotCommand implements CommandExecutor
                 {
                     denies += ", ";
                 }
-                denies += UUIDUtil.getName(plotDataEx.helpers.get(i));
+                denies += UUIDUtil.getName(plotDataEx.denies.get(i));
             }
 
             player.sendMessage("§a[Plot] ─────────────────────────");
