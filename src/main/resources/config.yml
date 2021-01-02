@@ -13,7 +13,10 @@ message:
     not_plot: "§a[Plot] §f그 곳은 플롯이 아닙니다."
     not_plot_world: "§a[Plot] §f그 곳은 플롯 월드가 아닙니다."
     over_radius: "§a[Plot] §f너무 먼 플롯입니다."
-    buy_plot: "§a[Plot] §f플롯을 구매했습니다!"
+    buy_plot: "§a[Plot] §f[%d:%d] 플롯을 구매했습니다!"
+  auto:
+    plot_limit: "§a[Plot] §f보유 플롯이 최대 개수를 넘었습니다."
+    buy_plot: "§a[Plot] §f[%d:%d] 플롯을 구매했습니다!"
   info:
     not_plot: "§a[Plot] §f그 곳은 플롯이 아닙니다."
     not_plot_world: "§a[Plot] §f그 곳은 플롯 월드가 아닙니다."
@@ -109,3 +112,7 @@ message:
     wrong_set: "§a[Plot] §f알 수 없는 설정입니다."
     wrong_value: "§a[Plot] §f알 수 없는 값입니다."
     success: "§a[Plot] §f플롯을 설정했습니다."
+  getskin:
+    no_arg: "§a[Plot] §f스킨 이름을 입력하세요."
+    no_data: "§a[Plot] §f데이터가 존재하지 않는 스킨입니다."
+    success: "§a[Plot] §f스킨 변경권을 받았습니다."

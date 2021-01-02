@@ -1,15 +1,20 @@
 package woolyung.main.Events;
 
+import com.sun.scenario.effect.Crop;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import woolyung.main.MineplanetPlot;
 import woolyung.main.plot.Data.PlotDataEx;
 
@@ -152,6 +157,16 @@ public class AnimalEventListener implements Listener
 
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onTrampleEvent(PlayerInteractEvent e) {
+        if (!e.getPlayer().getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
+            return;
+
+        if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType().toString().compareTo("SOIL") == 0) {
+            e.setCancelled(true);
         }
     }
 }

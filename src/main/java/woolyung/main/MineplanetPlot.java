@@ -72,7 +72,7 @@ public final class MineplanetPlot extends JavaPlugin
 
         getCommand("plot").setExecutor(new PlotCommand());
 
-        getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerEventListener(), this);
         getServer().getPluginManager().registerEvents(new BlockEventListener(), this);
         getServer().getPluginManager().registerEvents(new BucketEventListener(), this);
         getServer().getPluginManager().registerEvents(new AnimalEventListener(), this);

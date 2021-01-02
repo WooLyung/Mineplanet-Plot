@@ -3,6 +3,7 @@ package woolyung.main.Events;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,13 +28,12 @@ public class ClickEventListener implements Listener
             return;
 
         PlotDataEx plotData = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(entity.getLocation().getBlockX(), entity.getLocation().getBlockZ());
-        if (plotData != null)
-        {
-            if (plotData.click)
-                return;
-
+        if (plotData != null) {
             if (plotData.owner.compareTo(player.getUniqueId().toString()) == 0 // 주인 혹은 도우미
                     || plotData.helpers.contains(player.getUniqueId().toString()))
+                return;
+
+            if (plotData.click && entity.getType() != EntityType.ARMOR_STAND)
                 return;
 
             event.setCancelled(true);

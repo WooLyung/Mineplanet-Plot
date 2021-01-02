@@ -1,15 +1,15 @@
 package woolyung.main.commands;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import woolyung.main.MineplanetPlot;
-import woolyung.main.plot.Data.PlayerData;
-import woolyung.main.plot.Data.PlayerDataEx;
-import woolyung.main.plot.Data.PlotDataEx;
-import woolyung.main.plot.Data.PlotLocData;
+import woolyung.main.plot.Data.*;
 import woolyung.util.UUIDUtil;
 
 import java.util.ArrayList;
@@ -63,6 +63,10 @@ public class PlotCommand implements CommandExecutor
             else if (args[0].compareTo("set") == 0)
             {
                 arg_set(sender, command, label, args, player);
+            }
+            else if (args[0].compareTo("auto") == 0)
+            {
+                arg_auto(sender, command, label, args, player);
             }
             else if (args[0].compareTo("merge") == 0)
             {
@@ -134,6 +138,20 @@ public class PlotCommand implements CommandExecutor
                 else
                     player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
             }
+            else if (args[0].compareTo("getskin") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.getskin"))
+                    arg_getskin(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
+            else if (args[0].compareTo("getskin2") == 0)
+            {
+                if (player.hasPermission("mcplanetplot.permission.getskin"))
+                    arg_getskin2(sender, command, label, args, player);
+                else
+                    player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.no_permission"));
+            }
             else
             {
                 player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.command.wrong_command"));
@@ -149,6 +167,7 @@ public class PlotCommand implements CommandExecutor
         player.sendMessage("§a · §7/plot help §f: 플롯 명령어를 봅니다");
         player.sendMessage("§a · §7/plot info §f: 플롯의 정보를 확인합니다");
         player.sendMessage("§a · §7/plot buy §f: 플롯을 구매합니다");
+        player.sendMessage("§a · §7/plot auto §f: 플롯을 자동으로 구매합니다");
         player.sendMessage("§a · §7/plot list [p] §f: 플레이어의 플롯을 확인합니다");
         player.sendMessage("§a · §7/plot home [n] §f: 자신의 플롯으로 이동합니다");
         player.sendMessage("§a · §7/plot tp <x> <z> §f: 해당 플롯으로 이동합니다");
@@ -170,6 +189,8 @@ public class PlotCommand implements CommandExecutor
         player.sendMessage("§a · §7/plot setskin <s> §f: 플롯 스킨을 설정합니다");
         player.sendMessage("§a · §7/plot setbiome <b> §f: 바이옴을 설정합니다");
         player.sendMessage("§a · §7/plot clear §f: 플롯을 초기화합니다");
+        player.sendMessage("§a · §7/plot getskin <s> §f: 스킨 변경권을 받습니다");
+        player.sendMessage("§a · §7/plot getskin2 <s> §f: 거래 불가 스킨 변경권을 받습니다");
     }
 
     private void arg_set(CommandSender sender, Command command, String label, String[] args, Player player)
@@ -668,7 +689,7 @@ public class PlotCommand implements CommandExecutor
         }
 
         player.sendMessage("§a[Plot] ─────────────────────────");
-        player.sendMessage("§a · §7주인 §f: [" + playerDataEx.name + "]");
+        player.sendMessage("§a · §7주인 §f: " + playerDataEx.name);
         player.sendMessage("§a · §7플롯개수 §f: " + playerDataEx.plotCount + "/" + playerDataEx.maxPlot);
         player.sendMessage("§a · §7보유플롯 §f: " + plots);
     }
@@ -764,14 +785,11 @@ public class PlotCommand implements CommandExecutor
             return;
         }
 
-        if (plotDataEx != null)
-        {
-            if (plotDataEx.owner.compareTo(player.getUniqueId().toString()) == 0)
-            {
+        if (plotDataEx != null) {
+            if (plotDataEx.owner.compareTo(player.getUniqueId().toString()) == 0) {
                 player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.buy.already_my_plot")); // 이미 내 플롯임
             }
-            else
-            {
+            else {
                 player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.buy.exist_plot_owner")); // 다른 사람 플롯임
             }
             return;
@@ -784,7 +802,130 @@ public class PlotCommand implements CommandExecutor
             return;
         }
 
-        player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.buy.buy_plot")); // 플롯 구매함
+        player.sendMessage(String.format(MineplanetPlot.instance.getConfig().getString("message.buy.buy_plot"), plotLocData.plotLocX, plotLocData.plotLocZ)); // 플롯 구매함
         MineplanetPlot.instance.getPlotManager().buyPlot(player, plotLocData.plotLocX, plotLocData.plotLocZ);
+    }
+
+    private void arg_auto(CommandSender sender, Command command, String label, String[] args, Player player)
+    {
+        PlayerDataEx playerDataEx = MineplanetPlot.instance.getPlotDatabase().getPlayerDataEx(player);
+
+        if (playerDataEx != null) {
+            if (playerDataEx.plotCount >= playerDataEx.maxPlot) {
+                player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.auto.plot_limit")); // 최대 플롯을 넘었음
+                return;
+            }
+        }
+
+        PlotDataEx plotDataEx = null;
+        int x = 0;
+        int z = 0;
+        int scale = 0;
+        int dir = 3;
+
+        int x2 = 0;
+        int z2 = 0;
+
+        do {
+            plotDataEx = MineplanetPlot.instance.getPlotDatabase().getPlotDataEx(x, z);
+            x2 = x;
+            z2 = z;
+
+            if (x == z && z == scale && dir == 3) {
+                scale++;
+                dir = 0;
+                x = scale;
+                z = scale;
+            }
+            else if (dir == 0) {
+                x--;
+                if (x == -scale) {
+                    dir = 1;
+                }
+            }
+            else if (dir == 1) {
+                z--;
+                if (z == -scale) {
+                    dir = 2;
+                }
+            }
+            else if (dir == 2) {
+                x++;
+                if (x == scale) {
+                    dir = 3;
+                }
+            }
+            else if (dir == 3) {
+                z++;
+            }
+        } while (plotDataEx != null);
+
+        player.sendMessage(String.format(MineplanetPlot.instance.getConfig().getString("message.auto.buy_plot"), x2, z2)); // 플롯 구매함
+        MineplanetPlot.instance.getPlotManager().buyPlot(player, x2, z2);
+    }
+
+    private void arg_getskin(CommandSender sender, Command command, String label, String[] args, Player player) {
+        if (args.length < 2) {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_arg")); // 스킨 이름 입력하셈
+            return;
+        }
+
+        SkinData data = MineplanetPlot.instance.getSkinDatabase().getSkinData(args[1]);
+        if (data == null) {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.getskin.no_data")); // 데이터가 없는 스킨
+            return;
+        }
+
+        ItemStack item = new ItemStack(Material.PAPER);
+        item.setAmount(1);
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("§f[ §a플롯스킨 §f] " + data.display_name);
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("§f관리자에게 요청해 플롯의 스킨을 변경할 수 있습니다");
+        lore.add("§f적용된 스킨은 플롯 병합, 해제, 삭제시 사라집니다");
+        lore.add("§f");
+        lore.add("§3" + data.display_name + " (" + data.name + ")");
+        lore.add("§f" + data.lore);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        player.getInventory().addItem(item);
+
+        player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.getskin.success")); // 성공
+    }
+
+    private void arg_getskin2(CommandSender sender, Command command, String label, String[] args, Player player) {
+        if (args.length < 2) {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.setskin.no_arg")); // 스킨 이름 입력하셈
+            return;
+        }
+
+        SkinData data = MineplanetPlot.instance.getSkinDatabase().getSkinData(args[1]);
+        if (data == null) {
+            player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.getskin.no_data")); // 데이터가 없는 스킨
+            return;
+        }
+
+        ItemStack item = new ItemStack(Material.PAPER);
+        item.setAmount(1);
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("§f[ §a플롯스킨 §f] " + data.display_name);
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("§f관리자에게 요청해 플롯의 스킨을 변경할 수 있습니다");
+        lore.add("§f적용된 스킨은 플롯 병합, 해제, 삭제시 사라집니다");
+        lore.add("§c유저 간의 거래가 불가능한 스킨 변경권입니다");
+        lore.add("§f");
+        lore.add("§3" + data.display_name + " (" + data.name + ")");
+        lore.add("§f" + data.lore);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        player.getInventory().addItem(item);
+
+        player.sendMessage(MineplanetPlot.instance.getConfig().getString("message.getskin.success")); // 성공
     }
 }
