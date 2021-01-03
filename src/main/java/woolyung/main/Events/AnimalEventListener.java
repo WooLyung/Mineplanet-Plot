@@ -91,17 +91,19 @@ public class AnimalEventListener implements Listener
 
         if (reason == CreatureSpawnEvent.SpawnReason.NATURAL)
         {
-            PlotDataEx data = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(entity.getLocation().getBlockX(), entity.getLocation().getBlockZ());
-            if (data == null)
-            {
-                event.setCancelled(true);
-                return;
-            }
-            else if (!data.spawn_animal)
-            {
-                event.setCancelled(true);
-                return;
-            }
+            event.setCancelled(true);
+
+//            PlotDataEx data = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(entity.getLocation().getBlockX(), entity.getLocation().getBlockZ());
+//            if (data == null)
+//            {
+//                event.setCancelled(true);
+//                return;
+//            }
+//            else if (!data.spawn_animal)
+//            {
+//                event.setCancelled(true);
+//                return;
+//            }
         }
         else if (reason == CreatureSpawnEvent.SpawnReason.BREEDING
                 || reason == CreatureSpawnEvent.SpawnReason.EGG
@@ -112,8 +114,7 @@ public class AnimalEventListener implements Listener
     }
 
     @EventHandler
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
-    {
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             if (isAnimal(event.getEntity()) && event.getEntity().getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) {
                 event.setCancelled(true);
@@ -121,8 +122,7 @@ public class AnimalEventListener implements Listener
             }
         }
 
-        if (event.getDamager() instanceof Player)
-        {
+        if (event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
 
             if (!attacker.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
@@ -134,21 +134,17 @@ public class AnimalEventListener implements Listener
             PlotDataEx plotDataAttacker = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(attacker.getLocation().getBlockX(), attacker.getLocation().getBlockZ());
             PlotDataEx plotDataVictim = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(event.getEntity().getLocation().getBlockX(), event.getEntity().getLocation().getBlockZ());
 
-            if (event.getEntity() instanceof Player)
-            {
-                if (plotDataAttacker == null || plotDataVictim == null)
-                {
+            if (event.getEntity() instanceof Player) {
+                if (plotDataAttacker == null || plotDataVictim == null) {
                     event.setCancelled(true);
                     return;
                 }
-                if (!plotDataAttacker.pvp || !plotDataVictim.pvp)
-                {
+                if (!plotDataAttacker.pvp || !plotDataVictim.pvp) {
                     event.setCancelled(true);
                     return;
                 }
             }
-            else
-            {
+            else {
                 if (plotDataVictim == null) return;
                 if (plotDataVictim.attack_animal) return;
                 if (plotDataVictim.owner.compareTo(attacker.getUniqueId().toString()) == 0 // 주인 혹은 도우미

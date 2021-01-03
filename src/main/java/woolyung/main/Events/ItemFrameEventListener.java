@@ -45,8 +45,7 @@ public class ItemFrameEventListener implements Listener
     }
 
     @EventHandler
-    public void onFramePlace(HangingPlaceEvent event)
-    {
+    public void onFramePlace(HangingPlaceEvent event) {
         Player player = event.getPlayer();
 
         if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
@@ -70,8 +69,10 @@ public class ItemFrameEventListener implements Listener
     }
 
     @EventHandler
-    public void onFrameRightClick(PlayerInteractEntityEvent event)
-    {
+    public void onFrameRightClick(PlayerInteractEntityEvent event) {
+        if (event.getRightClicked().getType() != EntityType.ARMOR_STAND && event.getRightClicked().getType() != EntityType.ITEM_FRAME && event.getRightClicked().getType() != EntityType.PAINTING)
+            return;
+
         Player player = event.getPlayer();
 
         if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름

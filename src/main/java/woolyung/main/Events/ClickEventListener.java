@@ -33,7 +33,7 @@ public class ClickEventListener implements Listener
                     || plotData.helpers.contains(player.getUniqueId().toString()))
                 return;
 
-            if (plotData.click && entity.getType() != EntityType.ARMOR_STAND)
+            if (plotData.click)
                 return;
 
             event.setCancelled(true);
@@ -41,8 +41,7 @@ public class ClickEventListener implements Listener
     }
 
     @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event)
-    {
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         if (!player.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
@@ -51,23 +50,24 @@ public class ClickEventListener implements Listener
         if (player.hasPermission("mcplanetplot.permission.click")) // 권한이 있음
             return;
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
-        {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
             PlotDataEx plotDataBlock = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(block.getLocation().getBlockX(), block.getLocation().getBlockZ());
 
-            if (plotDataBlock != null)
-            {
+            if (plotDataBlock != null) {
+                if (block.getType() == Material.SWEET_BERRY_BUSH) {
+                    event.setCancelled(true);
+                    return;
+                }
+
                 if (block.getType() == Material.CHEST || block.getType() == Material.FURNACE || block.getType() == Material.SHULKER_BOX || block.getType() == Material.LOOM || block.getType() == Material.BARREL
                         || block.getType() == Material.SMOKER || block.getType() == Material.BLAST_FURNACE || block.getType() == Material.GRINDSTONE || block.getType() == Material.STONECUTTER
                         || block.getType() == Material.DISPENSER || block.getType() == Material.DROPPER || block.getType() == Material.TRAPPED_CHEST || block.getType() == Material.HOPPER
-                        || block.getType() == Material.LECTERN)
-                {
+                        || block.getType() == Material.LECTERN || block.getType() == Material.FLOWER_POT) {
                     if (plotDataBlock.blockClick)
                         return;
                 }
-                else
-                {
+                else {
                     if (plotDataBlock.click)
                         return;
                 }
@@ -79,12 +79,10 @@ public class ClickEventListener implements Listener
                 event.setCancelled(true);
             }
         }
-        else if (event.getAction() == Action.RIGHT_CLICK_AIR)
-        {
+        else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
             PlotDataEx plotDataPlayer = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
 
-            if (plotDataPlayer != null)
-            {
+            if (plotDataPlayer != null) {
                 if (plotDataPlayer.click)
                     return;
 
