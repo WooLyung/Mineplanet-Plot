@@ -56,8 +56,9 @@ public class ClickEventListener implements Listener
 
             if (plotDataBlock != null) {
                 if (block.getType() == Material.SWEET_BERRY_BUSH) {
-                    event.setCancelled(true);
-                    return;
+                    if (!(plotDataBlock.owner.compareTo(player.getUniqueId().toString()) == 0 // 주인 혹은 도우미가 아님
+                            || plotDataBlock.helpers.contains(player.getUniqueId().toString())))
+                        event.setCancelled(true);
                 }
 
                 if (block.getType() == Material.CHEST || block.getType() == Material.FURNACE || block.getType() == Material.SHULKER_BOX || block.getType() == Material.LOOM || block.getType() == Material.BARREL

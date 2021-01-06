@@ -89,26 +89,20 @@ public class AnimalEventListener implements Listener
         if (!entity.getWorld().equals(MineplanetPlot.instance.getPlotWorld().getWorld())) // 월드가 다름
             return;
 
-        if (reason == CreatureSpawnEvent.SpawnReason.NATURAL)
-        {
-            event.setCancelled(true);
-
+        if (reason == CreatureSpawnEvent.SpawnReason.NATURAL) {
 //            PlotDataEx data = MineplanetPlot.instance.getPlotDatabase().getPlotInnerData(entity.getLocation().getBlockX(), entity.getLocation().getBlockZ());
-//            if (data == null)
-//            {
-//                event.setCancelled(true);
+//            if (data == null) {
+//                entity.remove();
 //                return;
 //            }
-//            else if (!data.spawn_animal)
-//            {
-//                event.setCancelled(true);
+//            else if (!data.spawn_animal) {
+//                entity.remove();
 //                return;
 //            }
         }
         else if (reason == CreatureSpawnEvent.SpawnReason.BREEDING
                 || reason == CreatureSpawnEvent.SpawnReason.EGG
-                || reason == CreatureSpawnEvent.SpawnReason.DISPENSE_EGG)
-        {
+                || reason == CreatureSpawnEvent.SpawnReason.DISPENSE_EGG) {
             event.setCancelled(true);
         }
     }
