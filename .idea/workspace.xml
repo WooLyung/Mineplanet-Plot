@@ -7,9 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d0c66567-189f-4bff-9121-8ce5f704edfb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/woolyung/main/Events/AnimalEventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/woolyung/main/Events/AnimalEventListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/woolyung/main/Events/ClickEventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/woolyung/main/Events/ClickEventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -23,7 +21,7 @@
     <session id="911680371">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="35" />
+          <entry key="project.closed" value="36" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.100" value="1" />
           <entry key="project.open.time.101" value="1" />
@@ -44,6 +42,7 @@
           <entry key="project.open.time.29" value="2" />
           <entry key="project.open.time.3" value="2" />
           <entry key="project.open.time.30" value="1" />
+          <entry key="project.open.time.34" value="1" />
           <entry key="project.open.time.36" value="1" />
           <entry key="project.open.time.37" value="2" />
           <entry key="project.open.time.43" value="1" />
@@ -56,20 +55,20 @@
           <entry key="project.open.time.68" value="1" />
           <entry key="project.open.time.69" value="1" />
           <entry key="project.open.time.71" value="1" />
-          <entry key="project.opened" value="37" />
+          <entry key="project.opened" value="38" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="119" />
-          <entry key="java" value="48950" />
+          <entry key="java" value="48954" />
           <entry key="xml" value="9" />
           <entry key="yml" value="2602" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="48950" />
+          <entry key="JAVA" value="48954" />
           <entry key="PLAIN_TEXT" value="119" />
           <entry key="XML" value="9" />
           <entry key="YAML" value="2602" />
@@ -80,7 +79,7 @@
           <entry key="class" value="2" />
           <entry key="gitignore" value="1" />
           <entry key="iml" value="5" />
-          <entry key="java" value="184" />
+          <entry key="java" value="185" />
           <entry key="xml" value="6" />
           <entry key="yml" value="24" />
         </counts>
@@ -89,7 +88,7 @@
         <counts>
           <entry key="CLASS" value="2" />
           <entry key="IDEA_MODULE" value="5" />
-          <entry key="JAVA" value="184" />
+          <entry key="JAVA" value="185" />
           <entry key="PLAIN_TEXT" value="1" />
           <entry key="XML" value="6" />
           <entry key="YAML" value="24" />
@@ -102,8 +101,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/PlotDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8607">
-              <caret line="465" column="11" selection-start-line="465" selection-start-column="11" selection-end-line="465" selection-end-column="11" />
+            <state relative-caret-position="198">
+              <caret line="443" column="5" selection-start-line="443" selection-start-column="5" selection-end-line="443" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="259">
+              <caret line="591" column="9" lean-forward="true" selection-start-line="591" selection-start-column="9" selection-end-line="591" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -153,11 +161,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/Events/AnimalEventListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
+            <state relative-caret-position="217">
+              <caret line="88" column="32" selection-start-line="88" selection-start-column="32" selection-end-line="88" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -202,7 +210,6 @@
       <find>arg_list</find>
       <find>player</find>
       <find>arrow</find>
-      <find>merge</find>
       <find>plotSize</find>
       <find>연결플롯</find>
       <find>buy</find>
@@ -212,6 +219,7 @@
       <find>setskin</find>
       <find>maxplot</find>
       <find>setmaxplot</find>
+      <find>merge</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;</replace>
@@ -273,13 +281,13 @@
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/Events/GrowEventListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/Events/PlayerJoinEventListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/PlotDatabase.java" />
-        <option value="$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/Events/PlayerEventListener.java" />
         <option value="$PROJECT_DIR$/src/main/resources/config.yml" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/commands/PlotCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/Events/ItemFrameEventListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/Events/ClickEventListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/woolyung/main/Events/AnimalEventListener.java" />
+        <option value="$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java" />
       </list>
     </option>
   </component>
@@ -302,7 +310,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
@@ -380,6 +387,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -455,9 +463,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28791946" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29194632" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -640,20 +647,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="593" column="13" lean-forward="true" selection-start-line="593" selection-start-column="13" selection-end-line="593" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/PlotDatabase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8607">
-          <caret line="465" column="11" selection-start-line="465" selection-start-column="11" selection-end-line="465" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/commands/PlotCommand.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17081">
@@ -698,8 +691,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/Events/AnimalEventListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
+        <state relative-caret-position="217">
+          <caret line="88" column="32" selection-start-line="88" selection-start-column="32" selection-end-line="88" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/PlotDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="443" column="5" selection-start-line="443" selection-start-column="5" selection-end-line="443" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/woolyung/main/plot/PlotManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="591" column="9" lean-forward="true" selection-start-line="591" selection-start-column="9" selection-end-line="591" selection-end-column="9" />
         </state>
       </provider>
     </entry>

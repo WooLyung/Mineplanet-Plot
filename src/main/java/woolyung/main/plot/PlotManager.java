@@ -499,7 +499,7 @@ public class PlotManager
             {
                 for (int x = centerX - 12; x <= centerX + 12; x++)
                 {
-                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
+                    for (int y = 1; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                     }
                     for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
@@ -515,7 +515,7 @@ public class PlotManager
             {
                 for (int x = centerX - 12; x <= centerX + 12; x++)
                 {
-                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
+                    for (int y = 1; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                     }
                     for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
@@ -531,7 +531,7 @@ public class PlotManager
             {
                 for (int z = centerZ - 12; z <= centerZ + 12; z++)
                 {
-                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
+                    for (int y = 1; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                     }
                     for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
@@ -547,7 +547,7 @@ public class PlotManager
             {
                 for (int z = centerZ - 12; z <= centerZ + 12; z++)
                 {
-                    for (int y = 0; y <= plugin.getConfig().getInt("height") - 1; y++) {
+                    for (int y = 1; y <= plugin.getConfig().getInt("height") - 1; y++) {
                         world.getWorld().getBlockAt(x, y, z).setType(Material.DIRT);
                     }
                     for (int y = plugin.getConfig().getInt("height") + 1; y <= plugin.getConfig().getInt("height") + 30; y++) {
